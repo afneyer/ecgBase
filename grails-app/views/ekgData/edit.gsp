@@ -1,4 +1,4 @@
-<%@ page import="myfirstapp01.EkgData" %>
+<%@ page import="ecgBase.EkgData" %>
 <!DOCTYPE html>
 <html>
 	<head>

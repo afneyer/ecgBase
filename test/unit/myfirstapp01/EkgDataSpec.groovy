@@ -1,4 +1,4 @@
-package myfirstapp01
+package ecgBase
 
 import ecgBase.EkgData;
 import grails.test.mixin.TestFor

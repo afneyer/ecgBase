@@ -1,4 +1,4 @@
-package myfirstapp01
+package ecgBase
 
 import ecgBase.HelloController;
 import grails.test.mixin.TestFor
