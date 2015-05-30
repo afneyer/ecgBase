@@ -1,15 +1,14 @@
-<!DOCTYPE html>
 <html>
 	<head>
 		<meta name="layout" content="main">
-		<title>Upload New Document</title>
+		<title>Upload New ECG-File</title>
 	</head>
 	<body>
 		<div class="nav" role="navigation">
-			<ul><li><g:link class="list" action="list">Document List</g:link></li></ul>
+			<ul><li><g:link class="index" action="index">Back to ECG-File List</g:link></li></ul>
 		</div>
 		<div class="content scaffold-create" role="main">
-			<h1>Upload New Document</h1>
+			<h1>Upload New ECG-File</h1>
 			<g:if test="${flash.message}"><div class="message" role="status">${flash.message}</div></g:if>
 			<g:uploadForm action="upload">
 				<fieldset class="form">
@@ -27,30 +26,30 @@
 <%--<html>--%>
 <%--	<head>--%>
 <%--		<meta name="layout" content="main">--%>
-<%--		<g:set var="entityName" value="${message(code: 'document.label', default: 'Document')}" />--%>
+<%--		<g:set var="entityName" value="${message(code: 'ecgData.label', default: 'EkgData')}" />--%>
 <%--		<title><g:message code="default.create.label" args="[entityName]" /></title>--%>
 <%--	</head>--%>
 <%--	<body>--%>
-<%--		<a href="#create-document" class="skip" tabindex="-1"><g:message code="default.link.skip.label" default="Skip to content&hellip;"/></a>--%>
+<%--		<a href="#create-ecgData" class="skip" tabindex="-1"><g:message code="default.link.skip.label" default="Skip to content&hellip;"/></a>--%>
 <%--		<div class="nav" role="navigation">--%>
 <%--			<ul>--%>
 <%--				<li><a class="home" href="${createLink(uri: '/')}"><g:message code="default.home.label"/></a></li>--%>
 <%--				<li><g:link class="list" action="index"><g:message code="default.list.label" args="[entityName]" /></g:link></li>--%>
 <%--			</ul>--%>
 <%--		</div>--%>
-<%--		<div id="create-document" class="content scaffold-create" role="main">--%>
+<%--		<div id="create-ecgData" class="content scaffold-create" role="main">--%>
 <%--			<h1><g:message code="default.create.label" args="[entityName]" /></h1>--%>
 <%--			<g:if test="${flash.message}">--%>
 <%--			<div class="message" role="status">${flash.message}</div>--%>
 <%--			</g:if>--%>
-<%--			<g:hasErrors bean="${documentInstance}">--%>
+<%--			<g:hasErrors bean="${ecgDataInstance}">--%>
 <%--			<ul class="errors" role="alert">--%>
-<%--				<g:eachError bean="${documentInstance}" var="error">--%>
+<%--				<g:eachError bean="${ecgDataInstance}" var="error">--%>
 <%--				<li <g:if test="${error in org.springframework.validation.FieldError}">data-field-id="${error.field}"</g:if>><g:message error="${error}"/></li>--%>
 <%--				</g:eachError>--%>
 <%--			</ul>--%>
 <%--			</g:hasErrors>--%>
-<%--			<g:form url="[resource:documentInstance, action:'save']" >--%>
+<%--			<g:form url="[resource:ecgDataInstance, action:'save']" >--%>
 <%--				<fieldset class="form">--%>
 <%--					<g:render template="form"/>--%>
 <%--				</fieldset>--%>

@@ -118,12 +118,12 @@ log4j.main = {
 
 environments {
 	development {
-		uploadFolder = "c:/Temp/upload/"
+		uploadFolder = "c:/afndev/data/ecg/ecgAppSamples"
 	}
 	test {
-		uploadFolder = "c:/Temp/upload/"
+		uploadFolder = "c:/afndev/data/ecg/ecgAppSamples"
 	}
 	production {
-		uploadFolder = "c:/Temp/upload/"
+		uploadFolder = "c:/afndev/data/ecg/ecgAppSamples"
 	}
 }
