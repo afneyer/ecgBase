@@ -38,6 +38,25 @@ class EcgDataController {
 		}
 		redirect (action:'index')
 	}
+	
+	@Transactional
+	def download(long id) {
+        def ecgDataSample = EcgData.get(id)
+        if ( ecgDataSample == null) {
+            flash.message = "ECG record not found."
+            redirect (action:'list')
+        } else {
+            response.setContentType("APPLICATION/OCTET-STREAM")
+            response.setHeader("Content-Disposition", "Attachment;Filename=\"${ecgDataSample.fileName}\"")
+            def fullFilename = "c:/Temp/"+ecgDataSample.fileName
+            def outputStream = response.getOutputStream()
+            def byte[] buffer = ecgDataSample.fileData
+            def int len = buffer.size()
+            outputStream.write(buffer, 0, len);
+            outputStream.flush()
+            outputStream.close()
+        }
+    }
 
     @Transactional
     def save(EcgData ecgDataInstance) {

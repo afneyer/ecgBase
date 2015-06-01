@@ -12,7 +12,7 @@ class BootStrap {
 		new File(filePath).eachFile() { file ->
 			println "Uploading "+file.getName()
 			def ecgDataInstance = new EcgData()
-			ecgDataInstance.fileName = file.originalFilename
+			ecgDataInstance.fileName = file.getName()
 			ecgDataInstance.fileData = file.getBytes()
 			ecgDataInstance.identifier = EcgData.count()
 			ecgDataInstance.uploadDate = new Date()

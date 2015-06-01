@@ -44,6 +44,8 @@
 
 					<g:sortableColumn property="uploadDate"
 						title="${message(code: 'ecgData.uploadDate.label', default: 'Upload Date')}" />
+					
+					<th>Download</th>
 
 				</tr>
 			</thead>
@@ -54,7 +56,7 @@
 						<td>
 							${fieldValue(bean: ecgDataInstance, field: "identifier")}
 						</td>
-						
+
 						<td><g:link action="show" id="${ecgDataInstance.id}">
 								${fieldValue(bean: ecgDataInstance, field: "fileName")}
 							</g:link></td>
@@ -63,9 +65,13 @@
 							${fieldValue(bean: ecgDataInstance, field: "fileDataStr32")}
 						</td>
 
-						
-
 						<td><g:formatDate date="${ecgDataInstance.uploadDate}" /></td>
+						
+						<td><g:link action="download" id="${ecgDataInstance.id}">
+								download
+							</g:link>
+						</td>
+						
 
 					</tr>
 				</g:each>
