@@ -20,9 +20,10 @@ class EcgData {
 		fileData maxSize: 1024 * 1024 * 10 			// 10 MB Limit
 	}
 
+	/*
 	static mapping = {
-		columns { orgFile type:'longblob' }
-	}
+		columns { fileData type:'longblob' }
+	} */
 
 	static transients = ['fileDataStr32']
 

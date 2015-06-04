@@ -2,7 +2,9 @@ package ecgBase
 
 import static org.springframework.http.HttpStatus.*
 import ecgBase.EcgData;
+import ecgBase.EcgManager;
 import grails.transaction.Transactional
+
 
 
 @Transactional(readOnly = true)
@@ -56,6 +58,19 @@ class EcgDataController {
             outputStream.flush()
             outputStream.close()
         }
+    }
+	
+	@Transactional
+	def graph(long id) {
+		
+		def EcgManager ecgManager = new EcgManager(id)
+		println "Entering Graph Action"
+            
+		def Object retValue = ecgManager.evaluatedAndLearn()
+        	
+        println "Completed Graph Action"
+ 
+        redirect (action:'index')
     }
 
     @Transactional
