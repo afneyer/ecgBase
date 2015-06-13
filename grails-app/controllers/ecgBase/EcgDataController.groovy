@@ -85,7 +85,7 @@ class EcgDataController {
 //	    println ""
 //      println "Entering Evaluated and Learn " + new Date()
 		
-		def graphData = ecgManager.evaluatedAndLearn()
+		def graphData = ecgManager.createEcgGraphDataArray()
 		println "Exited Evaluated and Learn"
 
 		def ecgColumns = /[['number', 'time'], ['number', 'ecg value in micro-Volt']]/

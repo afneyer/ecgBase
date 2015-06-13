@@ -10,7 +10,7 @@ class EcgManager {
 		ecgDat = EcgData.get(id)
 	}
 	
-	Object evaluatedAndLearn() {
+	Object createEcgGraphDataArray() {
 		
 			def leadI = 'MDC_ECG_LEAD_I'
 			
