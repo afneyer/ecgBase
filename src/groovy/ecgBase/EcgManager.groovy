@@ -42,5 +42,28 @@ class EcgManager {
 			
 			return ecgData
 	}
+	
+	String getGraphOptions() { 
+		
+		def numGridLines = 20
+		def numMinGridLines = 5
+		
+		def graphOptionsStr = """{
+			hAxis : {
+				title : 'Time',
+		        gridlines : {
+					count : $numGridLines
+				},
+				minorGridlines : {
+					count : $numMinGridLines
+                },
+			},
+			vAxis : {
+				title : 'Ecg Voltage'
+			}
+		}"""
+		
+		return graphOptionsStr
+	}
 
 }

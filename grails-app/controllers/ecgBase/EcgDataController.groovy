@@ -81,8 +81,6 @@ class EcgDataController {
 		
 		def EcgManager ecgManager = new EcgManager(id)
 		println "Entering Graph Action"
-
-
 					    		 
 //	    println ""
 //      println "Entering Evaluated and Learn " + new Date()
@@ -93,18 +91,12 @@ class EcgDataController {
 		def ecgColumns = /[['number', 'time'], ['number', 'ecg value in micro-Volt']]/
 		def graphColumnsStr = ecgColumns
 
-				println graphData
+		// println graphData
 	
 		def graphDataStr = graphData.toString()
 		
-	    def graphOptionsStr = /{
-			hAxis : {
-				title : 'Time'
-			},
-			vAxis : {
-				title : 'Popularity Test'
-			}
-		}/;
+		
+	    def graphOptionsStr = ecgManager.getGraphOptions()
 		
 		// graphOptionsStr =  ' '
         	

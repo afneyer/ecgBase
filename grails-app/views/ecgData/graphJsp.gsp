@@ -31,17 +31,15 @@
 		    function drawGraph( graphColumns, graphData, graphOptions ) {
 
 				var data = new google.visualization.DataTable();
-				// data.addColumn('number', 'X');
-				// data.addColumn('number', 'Cats');
 			
 				// alert("here is passed data\n"+graphData);
 			    // alert("here are passed graph options\n" + graphOptions );
 			    
-			    alert ("before Columns\n" + 'var gColumns = ' + graphColumns );
+			    // alert ("before Columns\n" + 'var gColumns = ' + graphColumns );
 			    eval('var gColumns = ' + graphColumns);
-			    alert("here is gColumns\n" + gColumns );
+			    // alert("here is gColumns\n" + gColumns );
 				for (var i = 0; i < gColumns.length; i++) {
-				 	 alert(gColumns[i]);
+				 	 // alert(gColumns[i]);
                      data.addColumn( gColumns[i][0], gColumns[i][1] );
                 }          
 			    
