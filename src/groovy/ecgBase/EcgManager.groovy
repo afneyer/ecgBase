@@ -34,10 +34,13 @@ class EcgManager {
 			
 			def ecgData = EcgUtil.createEcgGraphArray('20021122091000.000',0.002,2.5,sequenceData)
 			
+			
 			println ecgData
 			
 			println"---------------------"
 			println "Done Xml-Evaluations"
+			
+			return ecgData
 	}
 
 }

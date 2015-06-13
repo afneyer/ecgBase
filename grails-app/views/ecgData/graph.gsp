@@ -10,11 +10,16 @@
 	</head>
 
 	<body>
-		${graphData}
+<%--		${graphData}--%>
 
-		<gvisualization:lineCoreChart elementId="piechart" title="Ecg Graphs" width="${800}" height="${300}"
+		<gvisualization:lineCoreChart elementId="ecgChart" title="Ecg Graphs" width="${1000}" height="${300}"
+			 hAxis="${new Expando([ 
+				 title: 'time[secs]',
+				 gridlines: new Expando([ count: 10 ]),
+				 minorGridlines: new Expando([count:10])
+		         ])}"
 			columns="${ecgColumns}" data="${graphData}" />
-		<div id="piechart"></div>
+		<div id="ecgChart"></div>
 
 	</body>
-</html>
+</html>[s]
