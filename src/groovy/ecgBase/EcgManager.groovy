@@ -20,17 +20,30 @@ class EcgManager {
 			def byte[] fileData = ecgDat.fileData
 			def xmlDataStr = new String(fileData)
 			
-			def GPathResult result = new XmlSlurper().parseText(xmlDataStr)
+			def result = new XmlSlurper().parseText(xmlDataStr)
+			println "GpathResult = "
+			println "GpathResult Type = " + result.getClass()
+			println result.attributes()
+			println result.text()
+			
+			def headId = result.@xmlns
+			println 'headId = ' + headId
+			
+			def seriesId = result.component.series.id.@root
+			println 'seriesId = ' + seriesId
 			
 			def seq = result.'**'.find { sequence->
 				sequence.code.@code == leadI
 			}
+			println "Seq Type = " + seq.getClass()
 			
 			println 'Code System = ' + seq.code.@codeSystem
 			
 			def sequenceData = seq.value.digits.toString()
-			println 'Sequence Data = ' + sequenceData
+			// println 'Sequence Data = ' + sequenceData
 			println 'Type of Sequence Data = ' + sequenceData.getClass()
+			
+			
 			
 			def ecgData = EcgUtil.createEcgGraphArray('20021122091000.000',0.002,2.5,sequenceData)
 			

@@ -22,7 +22,7 @@ class EcgUtil {
 		println 'date = ' + start
 		println 'timeInc = ' + timeInc
 		println 'scale = ' + valueScale
-		println 'valueString = ' + valueString
+		// println 'valueString = ' + valueString
 		
 		def ecgValues = valueString.tokenize()
 		
@@ -31,7 +31,7 @@ class EcgUtil {
 		def Double value = 0.0
 		
 		ecgValues.eachWithIndex { strValue, index ->
-			println 'index = '+ index + '     value = ' + strValue
+			// println 'index = '+ index + '     value = ' + strValue
 			value = new Double(ecgValues[index])
 			value = value*scale
 			def row = []
