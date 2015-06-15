@@ -9,7 +9,7 @@ class EcgUtil {
 		// TODO Auto-generated constructor stub
 	}
 	
-	public static createEcgGraphArray ( startTime, timeIncrement, valueScale, valueString ) {
+	public static createEcgGraphArray ( String startTime, Double timeIncrement, Double valueScale, String valueString ) {
 		
 		def ecgArray = []
 		
@@ -22,7 +22,7 @@ class EcgUtil {
 		println 'date = ' + start
 		println 'timeInc = ' + timeInc
 		println 'scale = ' + valueScale
-		// println 'valueString = ' + valueString
+		println 'valueString = ' + valueString[0..200]
 		
 		def ecgValues = valueString.tokenize()
 		

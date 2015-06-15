@@ -1,0 +1,4 @@
+#chart_div {
+ overflow-x: scroll;
+ overflow-y: hidden;     
+}

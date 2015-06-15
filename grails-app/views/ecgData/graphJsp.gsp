@@ -8,6 +8,7 @@
      <g:set var="entityName"
 	     value="${message(code: 'ecgData.label', default: 'EkgData1')}" />
       <title><g:message code="default.edit.label" args="[entityName]" /></title>
+      <link rel="stylesheet" href="${resource(dir: 'css', file: 'ecgApp.css')}" type="text/css">
 </head>
 
 <body>
