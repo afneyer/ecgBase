@@ -129,14 +129,14 @@ class EcgManager {
 		
 		def ecgHorizontalMajorInterval = 0.2
 		def ecgHorizontalMinorInterval = 0.04
-		def ecgVerticalMajorInterval = 0.5
-		def ecgVerticalMinorInterval = 0.1
+		def ecgVerticalMajorInterval = 500.0 // in microVolt
+		def ecgVerticalMinorInterval = 100.0 // in microVolt
 		
 		def pixelsPerMinorGridline = 5
 		def pixelsPerMajorGridline = 25
 		
-		def horizontalChartBorder = 200
-		def verticalChartBorder = 200
+		def horizontalChartBorder = 100
+		def verticalChartBorder = 100
 		
 		def EcgLead lead = leads[0]
 		def dataArray = lead.getTimeValueArray()
@@ -146,24 +146,41 @@ class EcgManager {
 		def maxTime = dataArray[dataArray.size()-1][0]
 		println 'maxTime = ' + maxTime
 		
-        def maxVerticalValue = 2
-		
-		def numHorizontalGridLines = (maxTime-minTime)/ecgHorizontalMajorInterval
-		def numHorizontalMinGridLines = 5
-		def horizontalChartExtend = numHorizontalGridLines * numHorizontalMinGridLines * pixelsPerMinorGridline
-		def horizontalChartWidth = horizontalChartExtend + 2*horizontalChartBorder
-		
-		def numVerticalGridLines = (maxVerticalValue)/ecgVerticalMajorInterval
-		def numVerticalMinGridLines = 5
-		def verticalChartExtend = numVerticalGridLines * numVerticalMinGridLines * pixelsPerMinorGridline
-		def verticalChartWidth = verticalChartExtend + 2*verticalChartBorder
-		
+        def maxVerticalValue = 2000.00 // max extend in microVolt
 		
 		def hMinValue = minTime
 		def hMaxValue = maxTime-minTime
+		
+		def numHorizontalGridIntervals = (hMaxValue)/ecgHorizontalMajorInterval
+		// round the number of Gridlines to a whole number and re-adjust the hMaxValue
+		numHorizontalGridIntervals = Math.round(numHorizontalGridIntervals)
+		hMaxValue = numHorizontalGridIntervals * ecgHorizontalMajorInterval
+		
+		def numHorizontalGridLines = numHorizontalGridIntervals + 1
+		println 'numHorizontalGridLines = ' + numHorizontalGridLines
+		
+		def numHorizontalMinGridLines = 5
+		def horizontalChartExtend = numHorizontalGridIntervals * numHorizontalMinGridLines * pixelsPerMinorGridline
+		def horizontalChartWidth = horizontalChartExtend + 2*horizontalChartBorder
+		
+		
 		def vMinValue = -maxVerticalValue
 		def vMaxValue = maxVerticalValue
+		def vExtend = 2*maxVerticalValue
 		
+		def numVerticalGridIntervals = (vMaxValue)/ecgVerticalMajorInterval
+		// round the number of Gridlines to a whole number and re-adjust the hMaxValue
+		numVerticalGridIntervals = Math.round(numVerticalGridIntervals)
+		vMaxValue = numVerticalGridIntervals * ecgVerticalMajorInterval
+		vMinValue = -vMaxValue
+		
+		def numVerticalGridLines = 2.0*numVerticalGridIntervals + 1
+		
+		println 'numVerticalGridLines = ' + numVerticalGridLines
+		
+		def numVerticalMinGridLines = 5
+		def verticalChartExtend = 2.0 * numVerticalGridIntervals  * numVerticalMinGridLines * pixelsPerMinorGridline
+		def verticalChartWidth = verticalChartExtend + 2*verticalChartBorder		
 		
 		def graphOptionsStr = """{
 			hAxis : {
@@ -175,7 +192,7 @@ class EcgManager {
 					count : $numHorizontalMinGridLines
                 },
 				minValue : 0,
-                maxValue : 2.0
+                maxValue : $hMaxValue
 			},
 			vAxis : {
 				title : 'Ecg Voltage',
@@ -186,7 +203,8 @@ class EcgManager {
 					count : $numVerticalMinGridLines
                 },
 				minValue : $vMinValue,
-				maxValue : $vMaxValue
+				maxValue : $vMaxValue,
+				
 			},
             width : $horizontalChartWidth,
             height : $verticalChartWidth,
@@ -204,5 +222,15 @@ class EcgManager {
 		
 		return graphOptionsStr
 	}
+	
+	String getGraphDataString ( String inCode ) {
+		
+		def leadIndex = leadCodes.findIndexOf { it == inCode }
+		def graphDataStr = leads[leadIndex].timeValueArray.toString()
+		
+		return graphDataStr
+		
+	}
+	    
 
 }

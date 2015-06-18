@@ -98,13 +98,11 @@ class EcgDataController {
 	
 		// def graphDataStr = graphData.toString()
 		
-		def graphDataStr = ecgManager.leads[0].timeValueArray.toString()
-		
+		// def graphDataStr = ecgManager.leads[0].timeValueArray.toString()
+	    def graphDataStr = ecgManager.getGraphDataString( 'MDC_ECG_LEAD_II' )
 		
 	    def graphOptionsStr = ecgManager.getGraphOptions()
 		
-		// graphOptionsStr =  ' '
-        	
         println "Completed Graph Action"
         
         [graphColumns:graphColumnsStr, graphData:graphDataStr, graphOptions:graphOptionsStr]
