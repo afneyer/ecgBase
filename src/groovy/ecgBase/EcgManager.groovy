@@ -231,6 +231,73 @@ class EcgManager {
 		return graphDataStr
 		
 	}
+	
+	String getGraphDataString () {
+		
+		def dataArray = []
+		
+		// iterate over all time values
+		def EcgLead lead = leads[0]
+		def sizeOfLeadArray = lead.timeValueArray.size()
+		
+		for (def i = 0; i < sizeOfLeadArray; i++) {
+			def row = []		
+			row.add( lead.timeValueArray[i][0] )
+			
+			for (def j = 0; j < leads.size(); j++) {
+				lead = leads[j]
+				row.add( lead.timeValueArray[i][1] )
+			}
+			dataArray.add(row)
+		}
+		
+		return dataArray.toString()
+	}
+		
+	
+	String getGraphColumnString() {
+		
+		def graphColumnArray = []
+		def dataType = /'number'/
+		
+		def graphColumnElement = []
+		graphColumnElement.add(dataType)
+		graphColumnElement.add(EcgUtil.quote('Time'))
+		graphColumnArray.add(graphColumnElement)
+		
+		
+		leadCodes.eachWithIndex { it, i -> // `it` is the current element, while `i` is the index
+			graphColumnElement = []
+			graphColumnElement.add(dataType)
+			graphColumnElement.add(EcgUtil.quote(it))
+			graphColumnArray.add(graphColumnElement)
+		}
+
+		return graphColumnArray.toString()
+		
+	}
+	
+	String getGraphColumnString( String inLeadCode ) {
+		
+		def graphColumnArray = []
+		def dataType = /'number'/
+		
+		def graphColumnElement = []
+		graphColumnElement.add(dataType)
+		graphColumnElement.add(EcgUtil.quote('Time'))
+		graphColumnArray.add(graphColumnElement)
+		
+
+		graphColumnElement = []
+		graphColumnElement.add(dataType)
+		graphColumnElement.add(EcgUtil.quote(inLeadCode))
+		graphColumnArray.add(graphColumnElement)
+		
+		return graphColumnArray.toString()
+		
+	}
+	
+	
 	    
 
 }

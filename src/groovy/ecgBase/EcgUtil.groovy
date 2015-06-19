@@ -44,6 +44,11 @@ class EcgUtil {
 		
 		return ecgArray
 	}
+	
+	public static String quote(String inString) {
+		String sq = /'/
+		return sq + inString + sq
+	}
 }
 			
 			

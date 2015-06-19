@@ -90,22 +90,30 @@ class EcgDataController {
 		def obj = ecgManager.createLeads()
 		
 		println "Exited Evaluated and Learn"
-
-		def ecgColumns = /[['number', 'time'], ['number', 'ecg value in micro-Volt']]/
-		def graphColumnsStr = ecgColumns
-
+		
+		def String ecgColumns = ecgManager.getGraphColumnString()
+	    def graphColumnsStr = ecgColumns
+	    println "ecgColumns = " + ecgColumns
+		
+		def String graphColumnStr = ecgManager.getGraphColumnString('MDC_ECG_LEAD_II')
+		println "graphColumStr = " + graphColumnStr
+		
 		// println graphData
 	
 		// def graphDataStr = graphData.toString()
 		
 		// def graphDataStr = ecgManager.leads[0].timeValueArray.toString()
-	    def graphDataStr = ecgManager.getGraphDataString( 'MDC_ECG_LEAD_II' )
+		
+		def graphDataStrTemp = ecgManager.getGraphDataString()
+		println "graphDataStrTemp " + graphDataStrTemp[0..1000] 
+				
+	    def graphDataStr = ecgManager.getGraphDataString('MDC_ECG_LEAD_II')
 		
 	    def graphOptionsStr = ecgManager.getGraphOptions()
 		
         println "Completed Graph Action"
         
-        [graphColumns:graphColumnsStr, graphData:graphDataStr, graphOptions:graphOptionsStr]
+        [graphColumns:graphColumnStr, graphData:graphDataStr, graphOptions:graphOptionsStr]
     }
 	
 	
