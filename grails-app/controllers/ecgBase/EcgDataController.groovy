@@ -113,7 +113,7 @@ class EcgDataController {
 		
         println "Completed Graph Action"
         
-        [graphColumns:graphColumnStr, graphData:graphDataStr, graphOptions:graphOptionsStr]
+        [graphColumns:graphColumnsStr, graphData:graphDataStrTemp, graphOptions:graphOptionsStr]
     }
 	
 	
