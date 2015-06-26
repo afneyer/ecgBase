@@ -1,0 +1,8 @@
+target/
+plugins/
+target/
+*.class
+*.log
+target/classes/application.properties
+target/work/plugins/asset-pipeline-1.9.9/src/groovy/uglifyjs/test/unit/compress/test/const.js
+target/work/plugins/asset-pipeline-1.9.9/src/groovy/uglifyjs/test/unit/compress/test/const.js
