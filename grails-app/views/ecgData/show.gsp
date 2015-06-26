@@ -65,8 +65,8 @@
 					<g:link class="edit" action="edit" resource="${ecgDataInstance}"><g:message code="default.button.edit.label" default="Edit" /></g:link>
 					<g:actionSubmit class="delete" action="delete" value="${message(code: 'default.button.delete.label', default: 'Delete')}" onclick="return confirm('${message(code: 'default.button.delete.confirm.message', default: 'Are you sure?')}');" />
 					<!-- g:actionSubmit value="${message(code='default.button.graph.label', default: 'Graph')}" action="graph" -->
-					<g:actionSubmit value="GraphJsp" action="graphJsp"/>
-					<g:actionSubmit value="Graph" action="graph"/>		
+					<g:actionSubmit value="Graph ECG Leads" action="graphJsp"/>
+					<g:actionSubmit value="Graph FFT" action="graphFft"/>		
 				</fieldset>
 			</g:form>
 		</div>

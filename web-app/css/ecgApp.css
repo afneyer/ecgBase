@@ -1,4 +1,33 @@
-#chart_div {
- overflow-x: scroll;
- overflow-y: hidden;     
+/* #chart_div { */
+/*  width: 1700; */
+/*  overflow-x: auto; */
+/*  height: 900px; */
+/*  overflow-y: auto;      */
+/* } */
+
+.chartWithOverlay {
+    width: 1700;
+ 	height: 900;
+}
+.overlay {
+    width: 1700;
+    height: 900;
+    position: absolute;
+    top: 100px;  /* chartArea top  */
+    left: 200px; /* chartArea left */
+}
+
+html * {
+/* 	margin: 0; */
+}
+
+body {
+/* 	background: #ffffff; */
+/* 	color: #333333; */
+/* 	margin: 0 auto; */
+	max-width: 1700px;
+/* 	overflow-x: hidden; prevents box-shadow causing a horizontal scrollbar in firefox when viewport < 960px wide */
+/* 	   -moz-box-shadow: 0 0 0.3em #255b17; */
+/* 	-webkit-box-shadow: 0 0 0.3em #255b17; */
+/* 	        box-shadow: 0 0 0.3em #255b17; */
 }

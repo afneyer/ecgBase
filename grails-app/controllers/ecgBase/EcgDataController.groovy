@@ -61,20 +61,25 @@ class EcgDataController {
     }
 	
 	@Transactional
-	def graph(long id) {
+	def graphFft(long id) {
 		
-		println ""
-		println "Entering Evaluated and Learn " + new Date()
+		println " "
+		println "Entering FFT and Graph" + new Date()
+		
 		def EcgManager ecgManager = new EcgManager(id)
-		def Object graphData = ecgManager.evaluatedAndLearn()
-	    println "Exited Evaluated and Learn"
 		
-		def ecgColumns = [['number', 'time'], ['number', 'ecg value [micro Volt]']]
+		// TODO : Delete
+		def obj = ecgManager.createLeads()
+		
+		def String graphDataStr = ecgManager.getFftGraphDataString( 'MDC_ECG_LEAD_II' )		
+		
+		def String graphColumnStr = ecgManager.getGraphColumnString( 'Amplitude' )
+				
+	    def graphOptionStr = """{}"""
 
-	    println graphData
-		[ecgColumns:ecgColumns, graphData:graphData]		    		
-
-    }
+	    // println graphData
+	    [graphColumns:graphColumnStr, graphData:graphDataStr, graphOptions:graphOptionStr]
+    }	
 	
 	@Transactional
 	def graphJsp(long id) {
@@ -93,10 +98,10 @@ class EcgDataController {
 		
 		def String ecgColumns = ecgManager.getGraphColumnString()
 	    def graphColumnsStr = ecgColumns
-	    println "ecgColumns = " + ecgColumns
+	    // println "ecgColumns = " + ecgColumns
 		
-		def String graphColumnStr = ecgManager.getGraphColumnString('MDC_ECG_LEAD_II')
-		println "graphColumStr = " + graphColumnStr
+		// def String graphColumnStr = ecgManager.getGraphColumnString('MDC_ECG_LEAD_II')
+		// println "graphColumStr = " + graphColumnStr
 		
 		// println graphData
 	

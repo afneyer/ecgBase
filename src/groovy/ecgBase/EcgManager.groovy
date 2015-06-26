@@ -23,6 +23,9 @@ class EcgManager {
 			def EcgLead lead = createLead(i,it)
 			leads[i] = lead
 		}
+		
+		createSquareLead()
+		
 		println "---Exiting CreateLeads ------------------------------------------------------------------"
 	}
 	
@@ -77,6 +80,47 @@ class EcgManager {
 		println "Done Xml-Evaluations"
 		
 		return lead
+	}
+	
+	void createSquareLead() {
+		
+		def numLeads = leads.size()
+		def EcgLead newLead = new EcgLead("Square Lead")
+		
+		def EcgLead firstLead = leads[0]
+		def leadArraySize = firstLead.timeValueArray.size()
+		
+		def EcgLead lead
+		
+		def leadArray = []
+		
+		for (def i = 0; i < leadArraySize; i++) {
+			
+			def row = []
+			
+			def squareVal = 0.0
+					
+			row.add( firstLead.timeValueArray[i][0] )
+			
+			for (def j = 0; j < leads.size(); j++) {
+				lead = leads[j]
+				squareVal += lead.timeValueArray[i][1] * lead.timeValueArray[i][1]
+			}
+				
+			squareVal = Math.sqrt(squareVal)
+			row.add(squareVal)
+			
+			leadArray.add(row)
+			// println "row element = " + row	
+			
+		}
+		
+	    newLead.setOrigin(0.0)
+	    newLead.setScale( firstLead.getScale() )
+	    newLead.setTimeValueArray(leadArray)
+			
+	    leads[leads.size()] = newLead
+		println "new lead = " + newLead.code
 	}
 	
 	Object createEcgGraphDataArray() {
@@ -135,8 +179,8 @@ class EcgManager {
 		def pixelsPerMinorGridline = 5
 		def pixelsPerMajorGridline = 25
 		
-		def horizontalChartLeftBorder = 100
-		def horizontalChartRightBorder = 100
+		def horizontalChartLeftBorder = 50
+		def horizontalChartRightBorder = 200
 		def verticalChartTopBorder = 100
 		def verticalChartBottomBorder = 100
 		
@@ -210,7 +254,7 @@ class EcgManager {
                 },
 				minValue : $vMinValue,
 				maxValue : $vMaxValue,
-				
+				textPosition : 'none',
 			},
             width : $horizontalChartWidth,
             height : $verticalChartHeight,
@@ -242,6 +286,31 @@ class EcgManager {
 		
 	}
 	
+	String getFftGraphDataString( String inCode ) {
+		
+		def leadIndex = leadCodes.findIndexOf { it == inCode }
+		def timeValArray = leads[leadIndex].timeValueArray 
+		
+		// extract value array
+		def Double[] valArray = []
+		def Double[] imagArray = []
+		for (def i=0; i++; i<timeValArray.size() ) {
+			valArray.add(timeValArray[i][1])
+			imagArray.add(0.0)
+		}
+		
+		Fft.transform(valArray, imagArray)
+		
+		for (def i=0; i++; i<timeValArray.size() ) {
+			timeValArray[i][1] = valArray[i]
+		}
+		
+		def graphDataStr = timeValArray.toString()
+		
+		return graphDataStr
+		
+	}
+	
 	String getGraphDataString () {
 		
 		def dataArray = []
@@ -258,6 +327,7 @@ class EcgManager {
 			
 			for (def j = 0; j < leads.size(); j++) {
 				lead = leads[j]
+				// println " j = " + j + " i = " + i
 				row.add( lead.timeValueArray[i][1] + (leads.size-1-j)*verticalOffset )
 			}
 			dataArray.add(row)
@@ -265,7 +335,6 @@ class EcgManager {
 		
 		return dataArray.toString()
 	}
-		
 	
 	String getGraphColumnString() {
 		
@@ -278,10 +347,12 @@ class EcgManager {
 		graphColumnArray.add(graphColumnElement)
 		
 		
-		leadCodes.eachWithIndex { it, i -> // `it` is the current element, while `i` is the index
+		def numLeads = leads.size()
+		for ( def i = 0; i < numLeads; i++ ) {
+			def EcgLead lead = leads[i]
 			graphColumnElement = []
 			graphColumnElement.add(dataType)
-			graphColumnElement.add(EcgUtil.quote(it))
+			graphColumnElement.add(EcgUtil.quote( lead.getCode() ))
 			graphColumnArray.add(graphColumnElement)
 		}
 
