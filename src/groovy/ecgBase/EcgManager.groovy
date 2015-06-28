@@ -289,19 +289,21 @@ class EcgManager {
 	String getFftGraphDataString( String inCode ) {
 		
 		def leadIndex = leadCodes.findIndexOf { it == inCode }
-		def timeValArray = leads[leadIndex].timeValueArray 
+		def EcgLead curLead = leads[leadIndex]
+		def timeValArray = curLead.timeValueArray 
+		def arrSize = timeValArray.size()
 		
 		// extract value array
-		def Double[] valArray = []
-		def Double[] imagArray = []
-		for (def i=0; i++; i<timeValArray.size() ) {
-			valArray.add(timeValArray[i][1])
-			imagArray.add(0.0)
+		def Double[] valArray = new Double[arrSize]
+		def Double[] imagArray = new Double[arrSize]
+		for (def i=0; i<timeValArray.size(); i++) {
+			valArray[i] = timeValArray[i][1]
+			imagArray[i] = 0.0
 		}
 		
 		Fft.transform(valArray, imagArray)
 		
-		for (def i=0; i++; i<timeValArray.size() ) {
+		for (def i=0; i<timeValArray.size(); i++) {
 			timeValArray[i][1] = valArray[i]
 		}
 		
