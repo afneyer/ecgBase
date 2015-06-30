@@ -10,5 +10,14 @@ class EcgLead {
 	public EcgLead ( inCode ) {
 		code = inCode
 	}
+	
+	Integer getNumSamples() {
+		return timeValueArray.size()
+	}
+	
+	Double getSampleInterval() {
+		def Double interval = timeValueArray[1][0] - timeValueArray[0][0]
+		return interval
+	}
 
 }

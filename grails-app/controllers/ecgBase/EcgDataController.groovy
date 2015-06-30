@@ -75,7 +75,13 @@ class EcgDataController {
 		
 		def String graphColumnStr = ecgManager.getGraphColumnString( 'Amplitude' )
 				
-	    def graphOptionStr = """{}"""
+	    // def graphOptionStr = """{}"""
+		def graphOptionStr = ecgManager.getFftGraphOptions()
+		
+		log.debug("Debug")
+		log.info("Info")
+		log.error("Error")
+		log.warn("Warn")
 
 	    // println graphData
 	    [graphColumns:graphColumnStr, graphData:graphDataStr, graphOptions:graphOptionStr]

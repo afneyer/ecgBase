@@ -102,7 +102,23 @@ log4j.main = {
     //appenders {
     //    console name:'stdout', layout:pattern(conversionPattern: '%c{2} %m%n')
     //}
+	
+	appenders {
+		console name:'stdout'
+		file name:'debugFile', file:'c:/afndev/apps/ecgBase/logs/ecgBaseDebug.log'
+		file name:'infoFile', file:'c:/afndev/apps/ecgBase/logs/ecgBaseInfo.log'
+	}
+	
+	root {
+		error 'stdout'
+		warn 'stdout'
+		info 'infoFile'
+		debug 'debugFile'
+	}
+	
 
+	debug 'ecgBase'
+	
     error  'org.codehaus.groovy.grails.web.servlet',        // controllers
            'org.codehaus.groovy.grails.web.pages',          // GSP
            'org.codehaus.groovy.grails.web.sitemesh',       // layouts

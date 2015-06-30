@@ -303,14 +303,96 @@ class EcgManager {
 		
 		Fft.transform(valArray, imagArray)
 		
-		for (def i=0; i<timeValArray.size(); i++) {
-			timeValArray[i][1] = valArray[i]
+		// def deltaf = 2 * Math.PI / ( curLead.getNumSamples() * curLead.getSampleInterval() )
+		def deltaf = 1.0 / ( curLead.getNumSamples() * curLead.getSampleInterval() )
+		
+		println "numSamples = " + curLead.getNumSamples()
+		println "sampleIntervale = " + curLead.getSampleInterval()
+		println "deltaf = " + deltaf
+		
+		def freq = deltaf
+		def freqGraphSize = timeValArray.size() / 2 - 1
+		println "TimeValueArray for FFT"
+		for (def i=0; i<freqGraphSize; i++) {
+			timeValArray[i][0] = freq
+			freq += deltaf
+			
+			timeValArray[i][1] = new Double( Math.sqrt( valArray[i]**2 + imagArray[i]**2 ) )
+			println " Index i=" + i + " [ " + freq + " , " + timeValArray[i][1] + " ]"
 		}
+		log.debug("Testing Logging")
+		log.error("test error")
+		log.warn("test error")
 		
 		def graphDataStr = timeValArray.toString()
 		
 		return graphDataStr
 		
+	}
+	
+	String getFftGraphOptions() {
+		
+		def pixelsPerMinorGridline = 5
+		def pixelsPerMajorGridline = 25
+		
+		def horizontalChartLeftBorder = 200
+		def horizontalChartRightBorder = 200
+		def verticalChartTopBorder = 100
+		def verticalChartBottomBorder = 100
+		
+		
+		def hMinValue = 0.0
+		def hMaxValue = 60.0
+		
+		def numHorizontalGridLines = 12
+		println 'numHorizontalGridLines = ' + numHorizontalGridLines
+		
+		def numHorizontalMinGridLines = 10
+		def horizontalChartExtend = 1000
+		def horizontalChartWidth = horizontalChartExtend + horizontalChartLeftBorder + horizontalChartRightBorder
+		
+		def numVerticalMinGridLines = 10
+		
+		def verticalChartExtend = 500
+		def verticalChartHeight = verticalChartExtend + verticalChartTopBorder + verticalChartBottomBorder
+		
+		def graphOptionsStr = """{
+			hAxis : {
+				title : 'Frequency',
+		        gridlines : {
+					count : $numHorizontalGridLines
+				},
+				minorGridlines : {
+					count : $numHorizontalMinGridLines
+                },
+				viewWindow : {
+					min : 0,
+					max : $hMaxValue,
+				},
+			},
+			vAxis : {
+				title : 'Amplitude',
+		        gridlines : {
+				},
+				minorGridlines : {
+					count : $numVerticalMinGridLines
+                },
+			},
+            width : $horizontalChartWidth,
+            height : $verticalChartHeight,
+			
+			chartArea : { 
+                left: $horizontalChartLeftBorder,
+                top: $verticalChartTopBorder,
+                width: $horizontalChartExtend,
+				height: $verticalChartExtend
+			}
+		}"""
+		
+		println "Options String"
+		println graphOptionsStr
+		
+		return graphOptionsStr
 	}
 	
 	String getGraphDataString () {
