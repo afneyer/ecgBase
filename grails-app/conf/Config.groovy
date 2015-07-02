@@ -69,7 +69,7 @@ grails.json.legacy.builder = false
 // enabled native2ascii conversion of i18n properties files
 grails.enable.native2ascii = true
 // packages to include in Spring bean scanning
-grails.spring.bean.packages = []
+grails.spring.bean.packages = [ecgBase]
 // whether to disable processing of multi part requests
 grails.web.disable.multipart=false
 
@@ -105,21 +105,19 @@ log4j.main = {
 	
 	appenders {
 		console name:'stdout'
-		file name:'debugFile', file:'c:/afndev/apps/ecgBase/logs/ecgBaseDebug.log'
-		file name:'infoFile', file:'c:/afndev/apps/ecgBase/logs/ecgBaseInfo.log'
+		file name: 'debugFile', file:'c:/afndev/apps/ecgBase/logs/ecgBaseDebug.log'
+		file name: 'infoFile',  file:'c:/afndev/apps/ecgBase/logs/ecgBaseInfo.log'
 	}
 	
 	root {
 		error 'stdout'
-		warn 'stdout'
-		info 'infoFile'
-		debug 'debugFile'
 	}
 	
-
-	debug 'ecgBase'
+	info additivity: false, infoFile: 'grails.app'
 	
-    error  'org.codehaus.groovy.grails.web.servlet',        // controllers
+    debug additivity: false, debugFile: 'grails.app'
+    
+	error  'org.codehaus.groovy.grails.web.servlet',        // controllers
            'org.codehaus.groovy.grails.web.pages',          // GSP
            'org.codehaus.groovy.grails.web.sitemesh',       // layouts
            'org.codehaus.groovy.grails.web.mapping.filter', // URL mapping

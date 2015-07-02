@@ -1,6 +1,12 @@
 package ecgBase
 
+import ecgBase.AppLog;
+import grails.util.Holders;
 import groovy.util.slurpersupport.GPathResult
+
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.context.ApplicationContext
+import org.springframework.context.support.GenericGroovyApplicationContext
 
 class EcgManager {
 
@@ -12,13 +18,15 @@ class EcgManager {
 	
 	def EcgData ecgDat
 	
+	def AppLog appLog = AppLog.getLogService()
+	
 	EcgManager(long id) {
 		ecgDat = EcgData.get(id)
 	}
 	
 	Object createLeads() {
 	    
-		println "---Entering Create Leads ----------------------------------------------------------------"
+		appLog.log "---Entering Create Leads ----------------------------------------------------------------"
 		leadCodes.eachWithIndex { it, i -> // `it` is the current element, while `i` is the index
 			def EcgLead lead = createLead(i,it)
 			leads[i] = lead
@@ -26,7 +34,7 @@ class EcgManager {
 		
 		createSquareLead()
 		
-		println "---Exiting CreateLeads ------------------------------------------------------------------"
+		appLog.log "---Exiting CreateLeads ------------------------------------------------------------------"
 	}
 	
 	Object createLead( leadIndex, leadCode ) {
@@ -318,7 +326,7 @@ class EcgManager {
 			freq += deltaf
 			
 			timeValArray[i][1] = new Double( Math.sqrt( valArray[i]**2 + imagArray[i]**2 ) )
-			println " Index i=" + i + " [ " + freq + " , " + timeValArray[i][1] + " ]"
+			// println " Index i=" + i + " [ " + freq + " , " + timeValArray[i][1] + " ]"
 		}
 		log.debug("Testing Logging")
 		log.error("test error")

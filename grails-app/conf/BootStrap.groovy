@@ -1,6 +1,8 @@
 import ecgBase.EcgData;
 
 class BootStrap {
+	
+	def appLog = AlogService.getAppLogService()
 
 	def grailsApplication
 
@@ -10,7 +12,7 @@ class BootStrap {
 		def filePath = grailsApplication.config.uploadFolder
 
 		new File(filePath).eachFile() { file ->
-			println "Uploading "+file.getName()
+			appLog.log "Uploading "+file.getName()
 			def ecgDataInstance = new EcgData()
 			ecgDataInstance.fileName = file.getName()
 			ecgDataInstance.fileData = file.getBytes()
