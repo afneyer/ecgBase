@@ -39,8 +39,8 @@ class EcgManager {
 	
 	Object createLead( leadIndex, leadCode ) {
 		
-		println "Entering Lead Creations for " + leadCode
-		println "----------------------------------------"
+		appLog.log "Entering Lead Creations for " + leadCode
+		appLog.log "----------------------------------------"
 		
 		def byte[] fileData = ecgDat.fileData
 		def xmlDataStr = new String(fileData)
@@ -48,7 +48,7 @@ class EcgManager {
 		def result = new XmlSlurper().parseText(xmlDataStr)
 		
 		def seriesId = result.component.series.id.@root
-		println 'seriesId = ' + seriesId
+		appLog.log 'seriesId = ' + seriesId
 		
 		def series = result.component.series
 		
@@ -57,35 +57,35 @@ class EcgManager {
 		}
 		
 		def timeInc = new Double(timeElement.value.increment.@value.toString())
-		println 'timeInc ' + timeInc
+		appLog.log 'timeInc ' + timeInc
 		
 		def seq = series.component.sequenceSet.component.'*'.find{ sequence->
 			sequence.code.@code == leadCode
 		}
-		println 'Code = ' + seq.code.@code
+		appLog.log 'Code = ' + seq.code.@code
 		
 		def Double origin = new Double(seq.value.origin.@value.toString())
-		println 'origin ' + origin
+		appLog.log 'origin ' + origin
 		
 		def Double scale = new Double(seq.value.scale.@value.toString())
-		println 'scale ' + scale
+		appLog.log 'scale ' + scale
 		
 		def sequenceData = seq.value.digits.toString()
-		println 'Sequence Data = ' + sequenceData[0..80]
-		// println 'Type of Sequence Data = ' + sequenceData.getClass()
+		appLog.log 'Sequence Data = ' + sequenceData[0..80]
+		// appLog.log 'Type of Sequence Data = ' + sequenceData.getClass()
 		
 		def leadArray = EcgUtil.createEcgGraphArray('20021122091000.000',timeInc,scale,sequenceData)
 		
-		// println "leadArray = " + leadArray
+		// appLog.log "leadArray = " + leadArray
 		
 		def lead = new EcgLead( leadCode )
 		lead.setOrigin(origin)
 		lead.setScale(scale)
 		lead.setTimeValueArray(leadArray)
 		
-		println "x-axis max value = " + leadArray[leadArray.size()-1]
-		println"---------------------"
-		println "Done Xml-Evaluations"
+		appLog.log "x-axis max value = " + leadArray[leadArray.size()-1]
+		appLog.log"---------------------"
+		appLog.log "Done Xml-Evaluations"
 		
 		return lead
 	}
@@ -119,7 +119,7 @@ class EcgManager {
 			row.add(squareVal)
 			
 			leadArray.add(row)
-			// println "row element = " + row	
+			// appLog.log "row element = " + row	
 			
 		}
 		
@@ -128,51 +128,51 @@ class EcgManager {
 	    newLead.setTimeValueArray(leadArray)
 			
 	    leads[leads.size()] = newLead
-		println "new lead = " + newLead.code
+		appLog.log "new lead = " + newLead.code
 	}
 	
 	Object createEcgGraphDataArray() {
 		
 			def leadI = 'MDC_ECG_LEAD_I'
 			
-			println "Entering Xml-Evaluation"
-			println "-----------------------"
+			appLog.log "Entering Xml-Evaluation"
+			appLog.log "-----------------------"
 			
 			def byte[] fileData = ecgDat.fileData
 			def xmlDataStr = new String(fileData)
 			
 			def result = new XmlSlurper().parseText(xmlDataStr)
-			// println "GpathResult = "
-			// println "GpathResult Type = " + result.getClass()
-			// println result.attributes()
-			// println result.text()
+			// appLog.log "GpathResult = "
+			// appLog.log "GpathResult Type = " + result.getClass()
+			// appLog.log result.attributes()
+			// appLog.log result.text()
 			
 			def headId = result.@xmlns
-			println 'headId = ' + headId
+			appLog.log 'headId = ' + headId
 			
 			def seriesId = result.component.series.id.@root
-			println 'seriesId = ' + seriesId
+			appLog.log 'seriesId = ' + seriesId
 			
 			def seq = result.'**'.find { sequence->
 				sequence.code.@code == leadI
 			}
-			println "Seq Type = " + seq.getClass()
+			appLog.log "Seq Type = " + seq.getClass()
 			
-			// println 'Code System = ' + seq.code.@codeSystem
+			// appLog.log 'Code System = ' + seq.code.@codeSystem
 			
 			def sequenceData = seq.value.digits.toString()
-			// println 'Sequence Data = ' + sequenceData
-			println 'Type of Sequence Data = ' + sequenceData.getClass()
+			// appLog.log 'Sequence Data = ' + sequenceData
+			appLog.log 'Type of Sequence Data = ' + sequenceData.getClass()
 			
 			
 			
 			def ecgData = EcgUtil.createEcgGraphArray('20021122091000.000',new Double(0.002),new Double(2.5),sequenceData)
 			
 			
-			println 'Returned graphArray' + ecgData[0..80]
+			appLog.log 'Returned graphArray' + ecgData[0..80]
 			
-			println"---------------------"
-			println "Done Xml-Evaluations"
+			appLog.log"---------------------"
+			appLog.log "Done Xml-Evaluations"
 			
 			return ecgData
 	}
@@ -196,9 +196,9 @@ class EcgManager {
 		def dataArray = lead.getTimeValueArray()
 		
 		def minTime = dataArray[0][0]
-		println 'minTime = ' + minTime
+		appLog.log 'minTime = ' + minTime
 		def maxTime = dataArray[dataArray.size()-1][0]
-		println 'maxTime = ' + maxTime
+		appLog.log 'maxTime = ' + maxTime
 		
         def maxVerticalValue = 1500.00 // max extend in microVolt
 		
@@ -211,7 +211,7 @@ class EcgManager {
 		hMaxValue = numHorizontalGridIntervals * ecgHorizontalMajorInterval
 		
 		def numHorizontalGridLines = numHorizontalGridIntervals + 1
-		println 'numHorizontalGridLines = ' + numHorizontalGridLines
+		appLog.log 'numHorizontalGridLines = ' + numHorizontalGridLines
 		
 		def numHorizontalMinGridLines = 5
 		def horizontalChartExtend = numHorizontalGridIntervals * numHorizontalMinGridLines * pixelsPerMinorGridline
@@ -233,7 +233,7 @@ class EcgManager {
 		
 		def numVerticalGridLines = numVerticalGridIntervals + 1
 		
-		println 'numVerticalGridLines = ' + numVerticalGridLines
+		appLog.log 'numVerticalGridLines = ' + numVerticalGridLines
 		
 		def numVerticalMinGridLines = 5
 		
@@ -275,8 +275,8 @@ class EcgManager {
 			}
 		}"""
 		
-		println "Options String"
-		println graphOptionsStr
+		appLog.log "Options String"
+		appLog.log graphOptionsStr
 		
 		return graphOptionsStr
 	}
@@ -314,19 +314,19 @@ class EcgManager {
 		// def deltaf = 2 * Math.PI / ( curLead.getNumSamples() * curLead.getSampleInterval() )
 		def deltaf = 1.0 / ( curLead.getNumSamples() * curLead.getSampleInterval() )
 		
-		println "numSamples = " + curLead.getNumSamples()
-		println "sampleIntervale = " + curLead.getSampleInterval()
-		println "deltaf = " + deltaf
+		appLog.log "numSamples = " + curLead.getNumSamples()
+		appLog.log "sampleIntervale = " + curLead.getSampleInterval()
+		appLog.log "deltaf = " + deltaf
 		
 		def freq = deltaf
 		def freqGraphSize = timeValArray.size() / 2 - 1
-		println "TimeValueArray for FFT"
+		appLog.log "TimeValueArray for FFT"
 		for (def i=0; i<freqGraphSize; i++) {
 			timeValArray[i][0] = freq
 			freq += deltaf
 			
 			timeValArray[i][1] = new Double( Math.sqrt( valArray[i]**2 + imagArray[i]**2 ) )
-			// println " Index i=" + i + " [ " + freq + " , " + timeValArray[i][1] + " ]"
+			// appLog.log " Index i=" + i + " [ " + freq + " , " + timeValArray[i][1] + " ]"
 		}
 		log.debug("Testing Logging")
 		log.error("test error")
@@ -353,7 +353,7 @@ class EcgManager {
 		def hMaxValue = 60.0
 		
 		def numHorizontalGridLines = 12
-		println 'numHorizontalGridLines = ' + numHorizontalGridLines
+		appLog.log 'numHorizontalGridLines = ' + numHorizontalGridLines
 		
 		def numHorizontalMinGridLines = 10
 		def horizontalChartExtend = 1000
@@ -397,8 +397,8 @@ class EcgManager {
 			}
 		}"""
 		
-		println "Options String"
-		println graphOptionsStr
+		appLog.log "Options String"
+		appLog.log graphOptionsStr
 		
 		return graphOptionsStr
 	}
@@ -419,7 +419,7 @@ class EcgManager {
 			
 			for (def j = 0; j < leads.size(); j++) {
 				lead = leads[j]
-				// println " j = " + j + " i = " + i
+				// appLog.log " j = " + j + " i = " + i
 				row.add( lead.timeValueArray[i][1] + (leads.size-1-j)*verticalOffset )
 			}
 			dataArray.add(row)

@@ -1,13 +1,14 @@
 package ecgBase
 
-import java.io.File;
+import grails.util.Holders;
 
-import org.springframework.stereotype.Component;
-import org.springframework.beans.factory.annotation.Autowired;
+import java.io.File;
 
 class AppLog {
 		
     def private static AppLog logServiceInstance = null;
+	
+	def private static logFileName = 'applog.log'
 	
     private AppLog() {}
 	
@@ -17,17 +18,16 @@ class AppLog {
 			logServiceInstance = new AppLog()
 		}
 		return logServiceInstance
-	
 	}
 		
 		def File outFile = null
 		
 		def log( String s ) {
 			
-			if (outFile == null || ! outFile.exists() ) {
+			if (outFile == null ) {
 	
-				// TODO : make this a configuration
-				outFile = new File("c:/afndev/apps/ecgBase/logs/applog.log")
+				def appLogFileDir = Holders.config.appLogFileDir
+				outFile = new File(appLogFileDir,logFileName)
 				outFile.createNewFile()
 			}
 			

@@ -4,6 +4,8 @@ import java.sql.Timestamp
 import java.text.SimpleDateFormat;
 
 class EcgUtil {
+	
+	def static applog = AppLog.getLogService()
 
 	public EcgUtil() {
 		// TODO Auto-generated constructor stub
@@ -19,10 +21,10 @@ class EcgUtil {
 		def Double timeInc = timeIncrement
 		def Double scale = valueScale
 		
-		println 'date = ' + start
-		println 'timeInc = ' + timeInc
-		println 'scale = ' + valueScale
-		println 'valueString = ' + valueString[0..200]
+		applog.log 'date = ' + start
+		applog.log 'timeInc = ' + timeInc
+		applog.log 'scale = ' + valueScale
+		applog.log 'valueString = ' + valueString[0..200]
 		
 		def ecgValues = valueString.tokenize()
 		
@@ -31,7 +33,7 @@ class EcgUtil {
 		def Double value = 0.0
 		
 		ecgValues.eachWithIndex { strValue, index ->
-			// println 'index = '+ index + '     value = ' + strValue
+			// applog.log 'index = '+ index + '     value = ' + strValue
 			value = new Double(ecgValues[index])
 			value = value*scale
 			def row = []

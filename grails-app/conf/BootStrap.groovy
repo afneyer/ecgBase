@@ -1,18 +1,19 @@
+import ecgBase.AppLog;
 import ecgBase.EcgData;
 
 class BootStrap {
 	
-	def appLog = AlogService.getAppLogService()
+	def applog = AppLog.getLogService()
 
 	def grailsApplication
 
 	def init = { servletContext ->
 
-		println "Entering Bootstrap"
+		applog.log "Entering Bootstrap"
 		def filePath = grailsApplication.config.uploadFolder
 
 		new File(filePath).eachFile() { file ->
-			appLog.log "Uploading "+file.getName()
+			applog.log "Uploading " + file.getName()
 			def ecgDataInstance = new EcgData()
 			ecgDataInstance.fileName = file.getName()
 			ecgDataInstance.fileData = file.getBytes()

@@ -141,3 +141,5 @@ environments {
 		uploadFolder = "c:/afndev/data/ecg/ecgAppSamples"
 	}
 }
+
+appLogFileDir = "c:/afndev/apps/ecgBase/logs"
