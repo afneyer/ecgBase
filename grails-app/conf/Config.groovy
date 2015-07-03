@@ -128,6 +128,7 @@ log4j.main = {
            'org.springframework',
            'org.hibernate',
            'net.sf.ehcache.hibernate'
+		   'org.codehaus.groovy.grails.commons.DefaultGrailsApplication'
 }
 
 environments {
@@ -143,3 +144,11 @@ environments {
 }
 
 appLogFileDir = "c:/afndev/apps/ecgBase/logs"
+environments {
+	development {
+		applogFileName = "applog.log"
+	}
+	test {
+		applogFileName = "testlog.log"
+	}
+}

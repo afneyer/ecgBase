@@ -1,5 +1,7 @@
 package ecgBase
 
+import grails.util.Holders;
+
 import java.sql.Timestamp
 import java.text.SimpleDateFormat;
 
@@ -50,6 +52,21 @@ class EcgUtil {
 	public static String quote(String inString) {
 		String sq = /'/
 		return sq + inString + sq
+	}
+	
+	static void uploadSampleFiles() {
+	
+		def filePath = Holders.config.uploadFolder
+	
+			new File(filePath).eachFile() { file ->
+				applog.log "Uploading " + file.getName()
+				def ecgDataInstance = new EcgData()
+				ecgDataInstance.fileName = file.getName()
+				ecgDataInstance.fileData = file.getBytes()
+				ecgDataInstance.identifier = EcgData.count()
+				ecgDataInstance.uploadDate = new Date()
+				ecgDataInstance.save()
+			}
 	}
 }
 			

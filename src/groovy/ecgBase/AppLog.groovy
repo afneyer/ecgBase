@@ -9,7 +9,6 @@ class AppLog {
 	def private static AppLog logServiceInstance = null
 	def private lineSep = System.lineSeparator
 	def private File outFile = null
-	def private static logFileName = 'applog.log'
 
 	private AppLog() {
 	}
@@ -37,6 +36,7 @@ class AppLog {
 	def initialize() {
 
 		def appLogFileDir = Holders.config.appLogFileDir
+		def logFileName = Holders.config.applogFileName
 		outFile = new File(appLogFileDir,logFileName)
 		outFile.createNewFile()
 

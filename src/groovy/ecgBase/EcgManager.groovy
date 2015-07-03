@@ -302,10 +302,9 @@ class EcgManager {
 		def arrSize = timeValArray.size()
 		
 		// extract value array
-		def Double[] valArray = new Double[arrSize]
+		def Double[] valArray = curLead.getValues()
 		def Double[] imagArray = new Double[arrSize]
 		for (def i=0; i<timeValArray.size(); i++) {
-			valArray[i] = timeValArray[i][1]
 			imagArray[i] = 0.0
 		}
 		
@@ -470,6 +469,16 @@ class EcgManager {
 		graphColumnArray.add(graphColumnElement)
 		
 		return graphColumnArray.toString()
+		
+	}
+	
+	void determineHeartRate( EcgLead inLead ) {
+		
+		// TODO:current work
+		def valueArray = inLead.getValues()
+		
+		// determine the top percent of values
+		def topPercent = 0.30
 		
 	}
 	
