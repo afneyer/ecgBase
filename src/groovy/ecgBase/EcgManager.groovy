@@ -320,19 +320,20 @@ class EcgManager {
 		
 		def freq = deltaf
 		def freqGraphSize = timeValArray.size() / 2 - 1
+		def freqArray = []
+		
 		appLog.log "TimeValueArray for FFT"
 		for (def i=0; i<freqGraphSize; i++) {
-			timeValArray[i][0] = freq
-			freq += deltaf
 			
-			timeValArray[i][1] = new Double( Math.sqrt( valArray[i]**2 + imagArray[i]**2 ) )
-			// appLog.log " Index i=" + i + " [ " + freq + " , " + timeValArray[i][1] + " ]"
+			def squareValue = new Double( Math.sqrt( valArray[i]**2 + imagArray[i]**2 ) )
+		    def row = [freq,squareValue]
+			freqArray.add(row)
+			
+			freq += deltaf
+			appLog.log " Index i=" + i + " [ " + freq + " , " + squareValue + " ]"
 		}
-		log.debug("Testing Logging")
-		log.error("test error")
-		log.warn("test error")
-		
-		def graphDataStr = timeValArray.toString()
+	
+		def graphDataStr = freqArray.toString()
 		
 		return graphDataStr
 		
