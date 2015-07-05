@@ -18,7 +18,9 @@ class EcgManager {
 	
 	def EcgData ecgDat
 	
-	def AppLog appLog = AppLog.getLogService()
+	def AppLog applog = AppLog.getLogService()
+	
+	def rPeaks = []
 	
 	EcgManager(long id) {
 		ecgDat = EcgData.get(id)
@@ -26,7 +28,7 @@ class EcgManager {
 	
 	Object createLeads() {
 	    
-		appLog.log "---Entering Create Leads ----------------------------------------------------------------"
+		applog.log "---Entering Create Leads ----------------------------------------------------------------"
 		leadCodes.eachWithIndex { it, i -> // `it` is the current element, while `i` is the index
 			def EcgLead lead = createLead(i,it)
 			leads[i] = lead
@@ -34,13 +36,13 @@ class EcgManager {
 		
 		createSquareLead()
 		
-		appLog.log "---Exiting CreateLeads ------------------------------------------------------------------"
+		applog.log "---Exiting CreateLeads ------------------------------------------------------------------"
 	}
 	
 	Object createLead( leadIndex, leadCode ) {
 		
-		appLog.log "Entering Lead Creations for " + leadCode
-		appLog.log "----------------------------------------"
+		applog.log "Entering Lead Creations for " + leadCode
+		applog.log "----------------------------------------"
 		
 		def byte[] fileData = ecgDat.fileData
 		def xmlDataStr = new String(fileData)
@@ -48,7 +50,7 @@ class EcgManager {
 		def result = new XmlSlurper().parseText(xmlDataStr)
 		
 		def seriesId = result.component.series.id.@root
-		appLog.log 'seriesId = ' + seriesId
+		applog.log 'seriesId = ' + seriesId
 		
 		def series = result.component.series
 		
@@ -57,21 +59,21 @@ class EcgManager {
 		}
 		
 		def timeInc = new Double(timeElement.value.increment.@value.toString())
-		appLog.log 'timeInc ' + timeInc
+		applog.log 'timeInc ' + timeInc
 		
 		def seq = series.component.sequenceSet.component.'*'.find{ sequence->
 			sequence.code.@code == leadCode
 		}
-		appLog.log 'Code = ' + seq.code.@code
+		applog.log 'Code = ' + seq.code.@code
 		
 		def Double origin = new Double(seq.value.origin.@value.toString())
-		appLog.log 'origin ' + origin
+		applog.log 'origin ' + origin
 		
 		def Double scale = new Double(seq.value.scale.@value.toString())
-		appLog.log 'scale ' + scale
+		applog.log 'scale ' + scale
 		
 		def sequenceData = seq.value.digits.toString()
-		appLog.log 'Sequence Data = ' + sequenceData[0..80]
+		applog.log 'Sequence Data = ' + sequenceData[0..80]
 		// appLog.log 'Type of Sequence Data = ' + sequenceData.getClass()
 		
 		def leadArray = EcgUtil.createEcgGraphArray('20021122091000.000',timeInc,scale,sequenceData)
@@ -83,9 +85,9 @@ class EcgManager {
 		lead.setScale(scale)
 		lead.setTimeValueArray(leadArray)
 		
-		appLog.log "x-axis max value = " + leadArray[leadArray.size()-1]
-		appLog.log"---------------------"
-		appLog.log "Done Xml-Evaluations"
+		applog.log "x-axis max value = " + leadArray[leadArray.size()-1]
+		applog.log"---------------------"
+		applog.log "Done Xml-Evaluations"
 		
 		return lead
 	}
@@ -128,15 +130,15 @@ class EcgManager {
 	    newLead.setTimeValueArray(leadArray)
 			
 	    leads[leads.size()] = newLead
-		appLog.log "new lead = " + newLead.code
+		applog.log "new lead = " + newLead.code
 	}
 	
 	Object createEcgGraphDataArray() {
 		
 			def leadI = 'MDC_ECG_LEAD_I'
 			
-			appLog.log "Entering Xml-Evaluation"
-			appLog.log "-----------------------"
+			applog.log "Entering Xml-Evaluation"
+			applog.log "-----------------------"
 			
 			def byte[] fileData = ecgDat.fileData
 			def xmlDataStr = new String(fileData)
@@ -148,31 +150,31 @@ class EcgManager {
 			// appLog.log result.text()
 			
 			def headId = result.@xmlns
-			appLog.log 'headId = ' + headId
+			applog.log 'headId = ' + headId
 			
 			def seriesId = result.component.series.id.@root
-			appLog.log 'seriesId = ' + seriesId
+			applog.log 'seriesId = ' + seriesId
 			
 			def seq = result.'**'.find { sequence->
 				sequence.code.@code == leadI
 			}
-			appLog.log "Seq Type = " + seq.getClass()
+			applog.log "Seq Type = " + seq.getClass()
 			
 			// appLog.log 'Code System = ' + seq.code.@codeSystem
 			
 			def sequenceData = seq.value.digits.toString()
 			// appLog.log 'Sequence Data = ' + sequenceData
-			appLog.log 'Type of Sequence Data = ' + sequenceData.getClass()
+			applog.log 'Type of Sequence Data = ' + sequenceData.getClass()
 			
 			
 			
 			def ecgData = EcgUtil.createEcgGraphArray('20021122091000.000',new Double(0.002),new Double(2.5),sequenceData)
 			
 			
-			appLog.log 'Returned graphArray' + ecgData[0..80]
+			applog.log 'Returned graphArray' + ecgData[0..80]
 			
-			appLog.log"---------------------"
-			appLog.log "Done Xml-Evaluations"
+			applog.log"---------------------"
+			applog.log "Done Xml-Evaluations"
 			
 			return ecgData
 	}
@@ -196,9 +198,9 @@ class EcgManager {
 		def dataArray = lead.getTimeValueArray()
 		
 		def minTime = dataArray[0][0]
-		appLog.log 'minTime = ' + minTime
+		applog.log 'minTime = ' + minTime
 		def maxTime = dataArray[dataArray.size()-1][0]
-		appLog.log 'maxTime = ' + maxTime
+		applog.log 'maxTime = ' + maxTime
 		
         def maxVerticalValue = 1500.00 // max extend in microVolt
 		
@@ -211,7 +213,7 @@ class EcgManager {
 		hMaxValue = numHorizontalGridIntervals * ecgHorizontalMajorInterval
 		
 		def numHorizontalGridLines = numHorizontalGridIntervals + 1
-		appLog.log 'numHorizontalGridLines = ' + numHorizontalGridLines
+		applog.log 'numHorizontalGridLines = ' + numHorizontalGridLines
 		
 		def numHorizontalMinGridLines = 5
 		def horizontalChartExtend = numHorizontalGridIntervals * numHorizontalMinGridLines * pixelsPerMinorGridline
@@ -233,7 +235,7 @@ class EcgManager {
 		
 		def numVerticalGridLines = numVerticalGridIntervals + 1
 		
-		appLog.log 'numVerticalGridLines = ' + numVerticalGridLines
+		applog.log 'numVerticalGridLines = ' + numVerticalGridLines
 		
 		def numVerticalMinGridLines = 5
 		
@@ -275,8 +277,8 @@ class EcgManager {
 			}
 		}"""
 		
-		appLog.log "Options String"
-		appLog.log graphOptionsStr
+		applog.log "Options String"
+		applog.log graphOptionsStr
 		
 		return graphOptionsStr
 	}
@@ -313,15 +315,15 @@ class EcgManager {
 		// def deltaf = 2 * Math.PI / ( curLead.getNumSamples() * curLead.getSampleInterval() )
 		def deltaf = 1.0 / ( curLead.getNumSamples() * curLead.getSampleInterval() )
 		
-		appLog.log "numSamples = " + curLead.getNumSamples()
-		appLog.log "sampleIntervale = " + curLead.getSampleInterval()
-		appLog.log "deltaf = " + deltaf
+		applog.log "numSamples = " + curLead.getNumSamples()
+		applog.log "sampleIntervale = " + curLead.getSampleInterval()
+		applog.log "deltaf = " + deltaf
 		
 		def freq = deltaf
 		def freqGraphSize = timeValArray.size() / 2 - 1
 		def freqArray = []
 		
-		appLog.log "TimeValueArray for FFT"
+		applog.log "TimeValueArray for FFT"
 		for (def i=0; i<freqGraphSize; i++) {
 			
 			def squareValue = new Double( Math.sqrt( valArray[i]**2 + imagArray[i]**2 ) )
@@ -329,7 +331,7 @@ class EcgManager {
 			freqArray.add(row)
 			
 			freq += deltaf
-			appLog.log " Index i=" + i + " [ " + freq + " , " + squareValue + " ]"
+			applog.log " Index i=" + i + " [ " + freq + " , " + squareValue + " ]"
 		}
 	
 		def graphDataStr = freqArray.toString()
@@ -353,7 +355,7 @@ class EcgManager {
 		def hMaxValue = 60.0
 		
 		def numHorizontalGridLines = 12
-		appLog.log 'numHorizontalGridLines = ' + numHorizontalGridLines
+		applog.log 'numHorizontalGridLines = ' + numHorizontalGridLines
 		
 		def numHorizontalMinGridLines = 10
 		def horizontalChartExtend = 1000
@@ -397,8 +399,8 @@ class EcgManager {
 			}
 		}"""
 		
-		appLog.log "Options String"
-		appLog.log graphOptionsStr
+		applog.log "Options String"
+		applog.log graphOptionsStr
 		
 		return graphOptionsStr
 	}
@@ -475,10 +477,56 @@ class EcgManager {
 	void determineHeartRate( EcgLead inLead ) {
 		
 		// TODO:current work
-		def valueArray = inLead.getValues()
+		def Object[] valueArray = inLead.getValues()
 		
 		// determine the top percent of values
-		def topPercent = 0.30
+		def topPercent = 0.05
+		
+		valueArray.sort()
+		applog.log "Sorted Value Array " + valueArray.toString()
+		
+		// get the topPercent value
+		def numSamples = inLead.getNumSamples()
+		Long idx = new Long( Math.round(inLead.numSamples*(1-topPercent)) )
+		applog.log "idx = " + idx
+		Double cutOff = valueArray[idx]
+		
+		applog.log "Cutoff " + cutOff
+		
+		valueArray = inLead.getValues()
+		applog.log "Unsorted Value Array " + valueArray.toString()
+		
+		// determine R-Peaks
+		def peakCount = 0
+		def peakValue = 0.0
+		def aboveCutoff = false
+		for (def i=0; i<numSamples; i++) {
+			
+			if (valueArray[i] < cutOff) {
+				if (aboveCutoff == true) {
+					peakCount++
+					rPeaks.add( i )
+					aboveCutoff = false
+				}
+			} else { 
+				aboveCutoff = true
+				peakValue = Math.max(peakValue, peakValue)
+			}
+		}
+		if (aboveCutoff == true) {
+			peakCount++
+			rPeaks.add( i )
+			aboveCutoff = false
+		}
+		applog.log "rPeakArray = " + rPeaks.toString()
+		
+		def numBeats = rPeaks.size()-1
+		
+		def beatLengths = []
+		for (def i=0; i<numBeats; i++) {
+			beatLengths.add( ( rPeaks[i+1] - rPeaks[i] ) * inLead.sampleInterval )
+		}
+		applog.log "beatLength = " + beatLengths.toString()
 		
 	}
 	

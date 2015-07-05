@@ -32,7 +32,7 @@ class EcgUtilSpec extends Specification {
 		testSample != null
     }
 	
-	void "test applog"() {
+	void "test "() {
 		applog.log "testing log for second test"
 		expect:
 		grailsApplication != null

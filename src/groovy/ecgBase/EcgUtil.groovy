@@ -68,6 +68,22 @@ class EcgUtil {
 				ecgDataInstance.save()
 			}
 	}
+	
+	static EcgData uploadSampleFile( String inFileName ) {
+		
+		def filePath = Holders.config.uploadFolder
+		applog.log "Uploading " + inFileName
+		def file = new File(filePath,inFileName)
+		def ecgDataInstance = new EcgData()
+		ecgDataInstance.fileName = file.getName()
+		ecgDataInstance.fileData = file.getBytes()
+		ecgDataInstance.identifier = EcgData.count()
+		ecgDataInstance.uploadDate = new Date()
+		ecgDataInstance.save()
+		
+		return ecgDataInstance
+		
+	}
 }
 			
 			
