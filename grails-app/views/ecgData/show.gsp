@@ -58,6 +58,14 @@
 					
 				</li>
 				</g:if>
+				
+				<g:if test="${ecgDataInstance?.timeAbsCode}">
+				<li class="fieldcontain">
+					<span id="timeAbsCode-label" class="property-label"><g:message code="ecgData.timeAbsCode.label" default="Testing for computed field" /></span>
+					<span class="property-value" aria-labelledby="timeAbsCode-label"><g:fieldValue bean="${ecgDataInstance}" field="timeAbsCode"/></span>
+					
+				</li>
+				</g:if>
 			
 			</ol>
 			<g:form url="[resource:ecgDataInstance, action:'delete']" method="DELETE">

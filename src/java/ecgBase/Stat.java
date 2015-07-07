@@ -34,4 +34,8 @@ public class Stat {
 		return Math.sqrt( inX );
 	}
 
+	public static Double StdDev(Double[] inVector) {
+		return Stat.sqrt( variance(inVector) );
+	}
+
 }

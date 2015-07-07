@@ -1,20 +1,14 @@
 package ecgBase
 
-
-
-
 class EcgData {
 
 	String identifier
 	String fileName
 	Date uploadDate = new Date()
 	byte[] fileData
-
-	String getFileDataStr32() {
-		String str = new String(fileData)
-		str = str.substring(0,Math.min(31,str.length()))
-		return str
-	}
+	EcgManager ecgDAO = null
+	
+	static AppLog applog = AppLog.getLogService()
 	
 	static constraints = {
 		identifier(nullable:true)
@@ -27,7 +21,29 @@ class EcgData {
 		columns { fileData type:'longblob' }
 	} */
 
-	static transients = ['fileDataStr32']
-
+	static transients = ['ecgDAO']
+	
+	EcgManager initDAO () {
+		if (ecgDAO == null) {
+			ecgDAO = new EcgManager(id)
+		}
+		return ecgDAO
+	}
+	
+	String getFileDataStr32() {
+		String str = new String(fileData)
+		str = str.substring(0,Math.min(31,str.length()))
+		return str
+	}
+		
+	String getTimeAbsCode() {
+		def String retValue
+		if (ecgDAO != null) {
+			retValue = ecgDAO.timeAbsCode
+		} else {
+			retValue = "ECG Data Object is not initialized"
+		}
+		return retValue
+	}
 	
 }

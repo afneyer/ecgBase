@@ -22,6 +22,7 @@ class EcgDataController {
     }
 
     def show(EcgData ecgDataInstance) {
+    	EcgManager dao = ecgDataInstance.initDAO()
         respond ecgDataInstance
     }
 

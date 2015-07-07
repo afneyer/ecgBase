@@ -14,16 +14,28 @@ class EcgManager {
 	def leadCodes = [ "MDC_ECG_LEAD_I", "MDC_ECG_LEAD_II", "MDC_ECG_LEAD_III", "MDC_ECG_LEAD_AVR", "MDC_ECG_LEAD_AVL", "MDC_ECG_LEAD_AVF",
                       "MDC_ECG_LEAD_V1", "MDC_ECG_LEAD_V2", "MDC_ECG_LEAD_V3", "MDC_ECG_LEAD_V4", "MDC_ECG_LEAD_V5", "MDC_ECG_LEAD_V6" ]
 	
+	def Integer squareLeadIndex = 12
+	def String squareLeadCode = 'Square Lead'
+	
 	def leads = []
 	
 	def EcgData ecgDat
 	
 	def AppLog applog = AppLog.getLogService()
 	
+	// values set by determineHeartRate()
 	def rPeaks = []
+	def Double[] RRIntervals
+	def Double[] heartRates
+	def heartRate
+	def heartRateStdDev
 	
 	EcgManager(long id) {
 		ecgDat = EcgData.get(id)
+		ecgDat.ecgDAO = this
+		createLeads()
+		determineHeartRate()
+		applog.log "initialized ecgDat.ecgDAO: " + ecgDat.ecgDAO.timeAbsCode
 	}
 	
 	Object createLeads() {
@@ -474,7 +486,19 @@ class EcgManager {
 		
 	}
 	
-	void determineHeartRate( EcgLead inLead ) {
+	EcgLead getSquareLead() {
+		return leads[squareLeadIndex]
+	}
+	
+	void determineHeartRate() {
+		determineHeartRateForLead( getSquareLead() )
+	}
+	
+	private void determineHeartRateForLead( EcgLead inLead ) {
+		
+		rPeaks = []
+		Double[] RRIntervals = []
+		Double[] heartRates = []
 		
 		// TODO:current work
 		def Object[] valueArray = inLead.getValues()
@@ -483,7 +507,7 @@ class EcgManager {
 		def topPercent = 0.05
 		
 		valueArray.sort()
-		applog.log "Sorted Value Array " + valueArray.toString()
+		// applog.log "Sorted Value Array " + valueArray.toString()
 		
 		// get the topPercent value
 		def numSamples = inLead.getNumSamples()
@@ -494,39 +518,63 @@ class EcgManager {
 		applog.log "Cutoff " + cutOff
 		
 		valueArray = inLead.getValues()
-		applog.log "Unsorted Value Array " + valueArray.toString()
+		applog.log("UnsortedValues", valueArray)
 		
 		// determine R-Peaks
 		def peakCount = 0
 		def peakValue = 0.0
+		def peakIndex = 0
 		def aboveCutoff = false
 		for (def i=0; i<numSamples; i++) {
 			
 			if (valueArray[i] < cutOff) {
+				// here we are falling below the cut-off and we record the peak
 				if (aboveCutoff == true) {
 					peakCount++
-					rPeaks.add( i )
+					rPeaks.add( peakIndex )
+					peakValue = 0.0 
 					aboveCutoff = false
 				}
 			} else { 
 				aboveCutoff = true
-				peakValue = Math.max(peakValue, peakValue)
+				if ( valueArray[i] > peakValue ) {
+					peakValue = valueArray[i]
+					peakIndex = i
+				}
 			}
 		}
 		if (aboveCutoff == true) {
 			peakCount++
-			rPeaks.add( i )
-			aboveCutoff = false
+			rPeaks.add( peakIndex )
 		}
 		applog.log "rPeakArray = " + rPeaks.toString()
 		
 		def numBeats = rPeaks.size()-1
 		
-		def beatLengths = []
+		RRIntervals = new Double[numBeats]
+		def beatLength = 0
+		heartRates = new Double[numBeats]
+
 		for (def i=0; i<numBeats; i++) {
-			beatLengths.add( ( rPeaks[i+1] - rPeaks[i] ) * inLead.sampleInterval )
+			beatLength = ( rPeaks[i+1] - rPeaks[i] ) * inLead.sampleInterval
+			RRIntervals[i] = beatLength
+			heartRates[i] = 1/beatLength
 		}
-		applog.log "beatLength = " + beatLengths.toString()
+		applog.log "beatLength = " + RRIntervals.toString()
+		
+		def averageBeatLength = Stat.mean(RRIntervals)
+		applog.log "average of beatLength = " + averageBeatLength
+
+		heartRate = Stat.mean( heartRates )
+		applog.log "heartRate [bps] = " + heartRate
+		
+		heartRate = 1/averageBeatLength * 60.0
+		applog.log "heartRate [bpm] = " + heartRate
+		
+		
+		
+		heartRateStdDev = Stat.StdDev( heartRates )
+		applog.log "heartRate standard deviation [bpm] = " + heartRateStdDev
 		
 	}
 	

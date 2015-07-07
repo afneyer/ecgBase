@@ -52,11 +52,10 @@ class EcgManagerSpec extends Specification {
 		void "test determineHeartRate"() {
 			applog.log "Entering test determineHeartRate"
 			
-	        EcgLead squareLead = ecgManager.leads[squareLeadIndex]
-			ecgManager.determineHeartRate(squareLead)
+			ecgManager.determineHeartRate()
 			
 			expect:
-			squareLead.code == squareLeadCode
+			ecgManager.heartRate == 71.6
 			
 			applog.log "Exiting test determineHeartRate"
 		}
