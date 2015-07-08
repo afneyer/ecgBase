@@ -1,7 +1,10 @@
 package ecgBase
 
+import org.junit.Test;
+
 import grails.test.mixin.TestMixin
 import grails.test.mixin.support.GrailsUnitTestMixin
+import groovyx.gprof.Profiler
 import spock.lang.Specification
 
 /**
@@ -49,5 +52,28 @@ class AppLogSpec extends Specification {
 		lineList[2] == logLine3
 		lineList[4] == logLine5
 
+	}
+	
+	@Test
+	void "test logLargeArray"() {
+		
+		def AppLog applog = AppLog.getLogService()
+		Integer asize = 10000
+		Double[] test = new Double[asize]
+		for (int i=0; i<asize; i++) {
+			test[i] = Math.random()
+		}
+		
+		def prof = new Profiler()
+		// profilerLog.startProfiling("test")
+		prof.start()
+		applog.log("testArray",test)
+		prof.stop()
+		applog.log prof.report.prettyPrint()
+		
+		
+		expect:
+		asize == 1000
+		
 	}
 }

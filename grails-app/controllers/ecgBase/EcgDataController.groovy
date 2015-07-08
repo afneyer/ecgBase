@@ -74,8 +74,10 @@ class EcgDataController {
 		appLog.log( "Entering FFT and Graph" + "   " + new Date() )
 		
 		def EcgManager ecgManager = new EcgManager(id)
+		ecgManager.initData()
 		
-		def obj = ecgManager.createLeads()
+		// TODO : remove
+		// def obj = ecgManager.createLeads()
 		
 		def String graphDataStr = ecgManager.getFftGraphDataString( 'MDC_ECG_LEAD_II' )		
 		
@@ -95,6 +97,7 @@ class EcgDataController {
 	def graphJsp(long id) {
 		
 		def EcgManager ecgManager = new EcgManager(id)
+		ecgManager.initData()
 		appLog.log "Entering Graph Action"
 					    		 
 //	    appLog.log ""
@@ -102,7 +105,8 @@ class EcgDataController {
 		
 		def graphData = ecgManager.createEcgGraphDataArray()
 		
-		def obj = ecgManager.createLeads()
+		// TODO : remove
+		// def obj = ecgManager.createLeads()
 		
 		appLog.log "Exited Evaluated and Learn"
 		

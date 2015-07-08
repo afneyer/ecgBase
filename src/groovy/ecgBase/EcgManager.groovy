@@ -21,6 +21,8 @@ class EcgManager {
 	
 	def EcgData ecgDat
 	
+	def initialized = false
+	
 	def AppLog applog = AppLog.getLogService()
 	
 	// values set by determineHeartRate()
@@ -33,9 +35,14 @@ class EcgManager {
 	EcgManager(long id) {
 		ecgDat = EcgData.get(id)
 		ecgDat.ecgDAO = this
-		createLeads()
-		determineHeartRate()
 		applog.log "initialized ecgDat.ecgDAO: " + ecgDat.ecgDAO.timeAbsCode
+	}
+	
+	void initData() {
+		if (!initialized) {
+			createLeads()
+			determineHeartRate()
+		}
 	}
 	
 	Object createLeads() {
@@ -511,14 +518,14 @@ class EcgManager {
 		
 		// get the topPercent value
 		def numSamples = inLead.getNumSamples()
-		Long idx = new Long( Math.round(inLead.numSamples*(1-topPercent)) )
+		def Integer idx = new Integer( Math.round(inLead.numSamples*(1-topPercent)).intValue() )
 		applog.log "idx = " + idx
 		Double cutOff = valueArray[idx]
 		
 		applog.log "Cutoff " + cutOff
 		
 		valueArray = inLead.getValues()
-		applog.log("UnsortedValues", valueArray)
+		// applog.log("UnsortedValues", valueArray)
 		
 		// determine R-Peaks
 		def peakCount = 0

@@ -7,6 +7,7 @@
 <g:set var="entityName"
 	value="${message(code: 'ecgData.label', default: 'EkgData')}" />
 <title><g:message code="default.list.label" args="[entityName]" /></title>
+<%--<r:require modules="bootstrap"/>--%>
 </head>
 <body>
 	<a href="#list-ecgData" class="skip" tabindex="-1"><g:message
