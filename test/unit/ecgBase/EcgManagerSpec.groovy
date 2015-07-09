@@ -55,7 +55,8 @@ class EcgManagerSpec extends Specification {
 			ecgManager.determineHeartRate()
 			
 			expect:
-			ecgManager.heartRate == 71.6
+			ecgManager.heartRate < 71.7
+			ecgManager.heartRate > 71.5
 			
 			applog.log "Exiting test determineHeartRate"
 		}
@@ -64,12 +65,13 @@ class EcgManagerSpec extends Specification {
 			applog.log "Entering test profile"
 			
 			
-			// def prof = new Profiler()
-			// profilerLog.startProfiling("test")
-			// prof.start()
+			def PerfLog perflog = PerfLog.getLogService()
+			def prof = new Profiler()
+			
+			prof.start()
 		    EcgUtil.uploadSampleFiles()
-			// prof.stop()
-			// applog.log prof.report.prettyPrint()
+			prof.stop()
+			prof.report.prettyPrint(perflog.getPrintWriter())
 			
 			expect:
 			squareLeadCode != null

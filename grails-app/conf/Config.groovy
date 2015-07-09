@@ -147,8 +147,10 @@ appLogFileDir = "c:/afndev/apps/ecgBase/logs"
 environments {
 	development {
 		applogFileName = "applog.log"
+		perflogFileName = "perflog.log"
 	}
 	test {
 		applogFileName = "testlog.log"
+		perflogFileName = "perflog.log"
 	}
 }

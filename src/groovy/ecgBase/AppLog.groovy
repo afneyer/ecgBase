@@ -9,6 +9,7 @@ class AppLog {
 	def private static AppLog logServiceInstance = null
 	def private lineSep = System.lineSeparator
 	def private File outFile = null
+	def private FileWriter fileWriter = null
 	def private titleString = null
 
 	private AppLog() {
@@ -28,26 +29,27 @@ class AppLog {
 		def appLogFileDir = Holders.config.appLogFileDir
 		def logFileName = Holders.config.applogFileName
 		outFile = new File(appLogFileDir,logFileName)
-		outFile.createNewFile()
-		// TODO : improve log performance with file writer
-		// new File("foo").withWriterAppend("UTF-8")
+		fileWriter = new FileWriter(outFile)
 
 		def appName = grails.util.Metadata.current.'app.name'
 		titleString = "Application Log File for " + appName + " Created on " + new Date() + lineSep + lineSep
-		outFile.write(titleString)
+		
+		fileWriter.append(titleString)
+		fileWriter.flush()
 	
 	}	
 
 	def log( String arrayName, array ) {
 		
 		if (outFile == null) { initialize() }
-		def StringBuffer sout = new StringBuffer("")
+		def StringBuffer sout = new StringBuffer("") 
 		def aSize = array.size()
 		
 		for (def i=0; i<aSize; i++) {
-			sout.append(arrayName + "["+ i + "] = " + array[i] + lineSep)
+		    sout.append(arrayName + "["+ i + "] = " + array[i] + lineSep)
 		}
-		outFile <<  sout
+		fileWriter.append(sout)
+		fileWriter.flush()
 	}
 	
 	def log( String s ) {
@@ -55,7 +57,6 @@ class AppLog {
 		if (outFile == null) {
 			initialize()
 		}
-
 		outFile << s + lineSep
 	}
 

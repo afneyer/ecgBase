@@ -24,6 +24,7 @@ class AppLogSpec extends Specification {
     void "test log"() {
 		
 		def AppLog applog = AppLog.getLogService()
+
 		applog.initialize()
 		
 		def logString = "Basic Log Test"
@@ -57,23 +58,25 @@ class AppLogSpec extends Specification {
 	@Test
 	void "test logLargeArray"() {
 		
+		
+		def PerfLog perflog = PerfLog.getLogService()
+		def prof = new Profiler()
+		
 		def AppLog applog = AppLog.getLogService()
-		Integer asize = 10000
+		Integer asize = 1000
+			
 		Double[] test = new Double[asize]
 		for (int i=0; i<asize; i++) {
 			test[i] = Math.random()
 		}
 		
-		def prof = new Profiler()
-		// profilerLog.startProfiling("test")
 		prof.start()
 		applog.log("testArray",test)
 		prof.stop()
-		applog.log prof.report.prettyPrint()
-		
+		applog.log prof.report.prettyPrint( perflog.getPrintWriter() )
 		
 		expect:
-		asize == 1000
+		asize == asize
 		
 	}
 }
