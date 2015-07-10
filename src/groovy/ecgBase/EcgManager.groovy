@@ -1,6 +1,6 @@
 package ecgBase
 
-import ecgBase.AppLog;
+import ecgBase.MyLog;
 import grails.util.Holders;
 import groovy.util.slurpersupport.GPathResult
 
@@ -23,7 +23,7 @@ class EcgManager {
 	
 	def initialized = false
 	
-	def AppLog applog = AppLog.getLogService()
+	def MyLog applog = MyLog.getLogService()
 	
 	// values set by determineHeartRate()
 	def rPeaks = []
@@ -583,6 +583,86 @@ class EcgManager {
 		heartRateStdDev = Stat.StdDev( heartRates )
 		applog.log "heartRate standard deviation [bpm] = " + heartRateStdDev
 		
+	}
+	
+	String getSelectedGraphDataString( String inCode ) {
+		
+			applog.log "getSelectedGraphDataString LeadCode = " + inCode
+			
+			def leadIndex = leadCodes.findIndexOf { it == inCode }
+			def timeValArray = leads[leadIndex].timeValueArray
+			def timeValShort = []
+			
+			for (def i=1; i<1000; i++) {
+				timeValShort.add( timeValArray[i] )
+			}	
+			
+			def graphDataStr = timeValShort.toString()
+			
+			return graphDataStr
+			
+	}	
+
+	
+	String getSelectedGraphOptions() {
+		
+		def pixelsPerMinorGridline = 5
+		def pixelsPerMajorGridline = 25
+		
+		def horizontalChartLeftBorder = 200
+		def horizontalChartRightBorder = 200
+		def verticalChartTopBorder = 100
+		def verticalChartBottomBorder = 100
+		
+		
+		def hMinValue = 0.0
+		def hMaxValue = 60.0
+		
+		def numHorizontalGridLines = 12
+		applog.log 'numHorizontalGridLines = ' + numHorizontalGridLines
+		
+		def numHorizontalMinGridLines = 10
+		def horizontalChartExtend = 1000
+		def horizontalChartWidth = horizontalChartExtend + horizontalChartLeftBorder + horizontalChartRightBorder
+		
+		def numVerticalMinGridLines = 10
+		
+		def verticalChartExtend = 500
+		def verticalChartHeight = verticalChartExtend + verticalChartTopBorder + verticalChartBottomBorder
+		
+		def graphOptionsStr = """{
+			hAxis : {
+				title : 'Frequency',
+		        gridlines : {
+					count : $numHorizontalGridLines
+				},
+				minorGridlines : {
+					count : $numHorizontalMinGridLines
+                },
+			},
+			vAxis : {
+				title : 'Amplitude',
+		        gridlines : {
+				},
+				minorGridlines : {
+					count : $numVerticalMinGridLines
+                },
+			},
+            width : $horizontalChartWidth,
+            height : $verticalChartHeight,
+			
+			chartArea : { 
+                left: $horizontalChartLeftBorder,
+                top: $verticalChartTopBorder,
+                width: $horizontalChartExtend,
+				height: $verticalChartExtend
+			}
+		}"""
+		
+		applog.log "Options String"
+		applog.log graphOptionsStr
+		
+		return graphOptionsStr
 	}
 	
 	

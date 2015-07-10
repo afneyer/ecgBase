@@ -7,7 +7,7 @@ import java.text.SimpleDateFormat;
 
 class EcgUtil {
 	
-	def static applog = AppLog.getLogService()
+	def static applog = MyLog.getLogService()
 
 	public EcgUtil() {
 		// TODO Auto-generated constructor stub

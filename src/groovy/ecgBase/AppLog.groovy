@@ -4,21 +4,21 @@ import grails.util.Holders;
 
 import java.io.File;
 
-class AppLog {
+class MyLogOld {
 
-	def private static AppLog logServiceInstance = null
+	def private static MyLog logServiceInstance = null
 	def private lineSep = System.lineSeparator
 	def private File outFile = null
 	def private FileWriter fileWriter = null
 	def private titleString = null
 
-	private AppLog() {
+	private MyLog() {
 	}
 
-	public static AppLog getLogService() {
+	public static MyLog getLogService() {
 
 		if ( logServiceInstance == null ) {
-			logServiceInstance = new AppLog()
+			logServiceInstance = new MyLog()
 		}
 		
 		return logServiceInstance

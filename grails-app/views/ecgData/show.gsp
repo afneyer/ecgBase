@@ -74,7 +74,8 @@
 					<g:actionSubmit class="delete" action="delete" value="${message(code: 'default.button.delete.label', default: 'Delete')}" onclick="return confirm('${message(code: 'default.button.delete.confirm.message', default: 'Are you sure?')}');" />
 					<!-- g:actionSubmit value="${message(code='default.button.graph.label', default: 'Graph')}" action="graph" -->
 					<g:actionSubmit value="Graph ECG Leads" action="graphJsp"/>
-					<g:actionSubmit value="Graph FFT" action="graphFft"/>		
+					<g:actionSubmit value="Graph FFT" action="graphFft"/>
+					<g:actionSubmit value="Graph Selected" action="graphSelected"/>		
 				</fieldset>
 			</g:form>
 		</div>

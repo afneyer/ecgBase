@@ -8,7 +8,7 @@ class EcgData {
 	byte[] fileData
 	EcgManager ecgDAO = null
 	
-	static AppLog applog = AppLog.getLogService()
+	static MyLog applog = MyLog.getLogService()
 	
 	static constraints = {
 		identifier(nullable:true)

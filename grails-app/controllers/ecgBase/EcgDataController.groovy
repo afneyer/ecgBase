@@ -1,9 +1,12 @@
 package ecgBase
 
 import static org.springframework.http.HttpStatus.*
+
+import org.springframework.aop.aspectj.RuntimeTestWalker.ThisInstanceOfResidueTestVisitor;
+
 import ecgBase.EcgData
 import ecgBase.EcgManager
-import ecgBase.AppLog
+import ecgBase.MyLog
 import grails.transaction.Transactional
 
 
@@ -14,7 +17,7 @@ class EcgDataController {
 
     static allowedMethods = [save: "POST", update: "PUT", delete: "DELETE"]
 	
-	static AppLog appLog = AppLog.getLogService()
+	static MyLog appLog = MyLog.getLogService()
 
     def index(Integer max) {
         params.max = Math.min(max ?: 10, 100)
@@ -91,7 +94,25 @@ class EcgDataController {
 		appLog.log "Completed FFT and Graph"
 	    
 		[graphColumns:graphColumnStr, graphData:graphDataStr, graphOptions:graphOptionStr]
-    }	
+    }
+	
+	@Transactional
+	def graphSelected(long id) {
+		
+		appLog.log(" ")
+		appLog.log( "Entering Graph Selected Sequence" + "   " + new Date() )
+		
+		def EcgManager ecgManager = new EcgManager(id)
+		ecgManager.initData()
+		
+		def String graphDataStr = ecgManager.getSelectedGraphDataString( ecgManager.leadCodes[1] )		
+		
+		def String graphColumnStr = ecgManager.getGraphColumnString( 'Amplitude' )
+				
+		def graphOptionStr = ecgManager.getSelectedGraphOptions()
+	    
+		[graphColumns:graphColumnStr, graphData:graphDataStr, graphOptions:graphOptionStr]
+    }
 	
 	@Transactional
 	def graphJsp(long id) {

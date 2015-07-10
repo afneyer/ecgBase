@@ -1,6 +1,8 @@
 package ecgBase;
 
-import java.util.stream.Stream;
+import org.apache.commons.lang.ArrayUtils;
+import org.codehaus.groovy.runtime.ArrayUtil;
+
 
 /* 
  * Free FFT and convolution (Java)
@@ -29,27 +31,65 @@ import java.util.stream.Stream;
 
 public class Fft {
 	
+	public static MyLog applog = MyLog.getLogService();
+	
+	/* 
+	 * Computes the discrete Fourier transform (DFT) of the given complex vector, storing the result back into the vector.
+	 * The vector can have any length. This is a wrapper function.
+	 * 
+	 * It also return the amplitude vector of the transform. The size of the amplitude vector is n/2 - 1;
+	 */
+	public static Double[] transform(Double[] inOutReal, Double[] inOutImag) {
+		
+		double[] real = ArrayUtils.toPrimitive(inOutReal);
+		double[] imag = ArrayUtils.toPrimitive(inOutReal);
+		
+		transform(real, imag);
+		
+		int size = real.length;
+		int ampSize = Math.floorDiv(size, 2) - 1;
+		Double [] amplitude = new Double[ampSize];
+		
+		for (int i=0; i<size; i++) {
+			inOutReal[i] = real[i];
+			inOutImag[i] = imag[i];
+			if (i<ampSize) {
+				amplitude[i] = Math.sqrt( real[i]*real[i] + imag[i]*imag[i]);
+			}
+		}
+		return amplitude;
+	}
+	
+	
+	
 	/* 
 	 * Computes the discrete Fourier transform (DFT) of the given complex vector, storing the result back into the vector.
 	 * The vector can have any length. This is a wrapper function.
 	 */
-	public static void transform(Double[] inOutReal, Double[] inOutImag) {
+	public static void transform(Double[] inOutReal) {
 		
 		double[] real = new double[inOutReal.length];
-		double[] imag = new double[inOutImag.length];
+		double[] imag = new double[inOutReal.length];
 		
 		int size = inOutReal.length;
 		for (int i=1; i<size; i++) {
 			real[i] = inOutReal[i];
-			imag[i] = inOutImag[i];
+			imag[i] = 0;
 		}
 		
 		transform(real, imag);
 		
 		for (int i=1; i<size; i++) {
-			inOutReal[i] = real[i]*10;
-			inOutImag[i] = imag[i]*10;
+			inOutReal[i] = real[i];
 		}
+	}
+	
+	/*
+	 * inCutoffFrequence = 1 / n * delta t
+	 */
+	public static Double[] smoothFilter( Double[] inOutSeq, Double inCutoffFrequency ) {
+		Double [] smoothSeq = new Double[inOutSeq.length];
+		return smoothSeq;
 	}
 	
 	public static void transform(double[] real, double[] imag) {
