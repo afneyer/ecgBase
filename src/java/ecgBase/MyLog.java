@@ -17,10 +17,12 @@ import jline.internal.Log;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.ArrayUtils;
 
+import com.opensymphony.module.sitemesh.util.Container;
 import com.xeiam.xchart.BitmapEncoder;
 import com.xeiam.xchart.Chart;
 import com.xeiam.xchart.QuickChart;
 import com.xeiam.xchart.BitmapEncoder.BitmapFormat;
+import com.xeiam.xchart.Series;
 import com.xeiam.xchart.SwingWrapper;
 import com.xeiam.xchart.VectorGraphicsEncoder;
 import com.xeiam.xchart.VectorGraphicsEncoder.VectorGraphicsFormat;
@@ -64,13 +66,28 @@ public class MyLog {
 	
 	}	
 
-	public void log( String arrayName, Object[]   array ) {
+	public void log( String arrayName, Object[] array ) {
 		
 		StringBuffer sout = new StringBuffer(""); 
 		int aSize = array.length;
 		
 		for (int i=0; i<aSize; i++) {
 		    sout.append(arrayName + "["+ i + "] = " + array[i] + lineSep);
+		}
+		log(sout);
+		
+	}
+	
+	public void log( String inArrayName1, Object[] inArray1, String inArrayName2, Object[] inArray2 ) {
+		
+		StringBuffer sout = new StringBuffer(""); 
+		int aSize = inArray1.length;
+		
+		for (int i=0; i<aSize; i++) {
+		    sout.append(inArrayName1 + "["+ i + "] = " + inArray1[i]);
+		    sout.append("  |  ");
+		    sout.append(inArrayName2 + "["+ i + "] = " + inArray2[i]);
+		    sout.append(lineSep);
 		}
 		log(sout);
 		
@@ -113,56 +130,19 @@ public class MyLog {
 		// Create Chart
 		Chart chart = QuickChart.getChart(inChartName, inXLabel, inYLabel,
 				inLegend, xDat, yDat);
-
-		// Show it
-		// JFrame frame = new SwingWrapper(chart).displayChart();
 		
-		final JFrame frame = new JFrame(inChartName);
-
-	    // Schedule a job for the event-dispatching thread:
-	    // creating and showing this application's GUI.
-	    // javax.swing.SwingUtilities.invokeLater(new Runnable() {
-
-	      // @Override
-	      // public void run() {
-
-	        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-	        JPanel chartPanel = new XChartPanel(chart);
-	        frame.add(chartPanel);
-
-	        // Display the window.
-	        frame.pack();
-	        frame.setVisible(true);
-	      // }
-	    // });
-		
-		BufferedImage image = new BufferedImage(frame.getWidth(),
-				frame.getHeight(), BufferedImage.TYPE_INT_RGB);
-		Graphics2D graphics2D = image.createGraphics();
-		frame.paint(graphics2D);
 		try {
-			ImageIO.write(image, "png", new File(fileName + ".png"));
-		} catch (IOException e2) {
+			BitmapEncoder.saveBitmapWithDPI(chart, fileName, BitmapFormat.JPG, 300);
+		} catch (IOException e) {
 			// TODO Auto-generated catch block
-			e2.printStackTrace();
+			e.printStackTrace();
 		}
 
-		
-		// or save it in high-res
-		/* TODO cleanup whole function
-		 * try {
-		 * 
-		 * // String fileName = "./logs/" + inChartName; //
-		 * VectorGraphicsEncoder.saveVectorGraphic(chart, fileName,
-		 * VectorGraphicsFormat.PDF); // BitmapEncoder.saveBitmap(chart,
-		 * fileName, BitmapFormat.PNG); //
-		 * BitmapEncoder.saveBitmapWithDPI(chart, fileName, BitmapFormat.PNG,
-		 * 300); BitmapEncoder.saveJPGWithQuality(chart, fileName, 0.95f); }
-		 * catch (IOException e) { // TODO Auto-generated catch block
-		 * e.printStackTrace(); }
-		 */
 	}
 
+	/*
+	 * Returns a list of lines written to the log file. Mostly used for testing and not for large log files.
+	 */
 	public String[] readLines() {
 		
         List<String> lineList = null;

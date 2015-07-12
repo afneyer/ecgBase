@@ -51,5 +51,75 @@ public class ArrUtilTest {
 		assertTrue( ArrUtil.equal(result, target, tolerance) );
 		
 	}
+	
+	@Test
+	public void testEqual() {
+		
+		// Inputs and parameters
+		Double [] arr1 = {3.0, -3.0, -3.0, 0.0, 3.0};
+		Double [] arr2 = {2.9, -3.1, -3.0, 0.1, 3.0};
+		
+		// Target and parameters
+		Double tolerance = 0.101;
+		
+		// Validation
+		assertTrue( ArrUtil.equal(arr1, arr2, tolerance) );
+		tolerance = 0.01;
+		assertFalse( ArrUtil.equal(arr1, arr2, tolerance) );
+		
+	}
+	
+	@Test
+	public void testAdd() {
+		
+		// Inputs and parameters
+		Double [] arr1 = {3.0, -3.0, -3.0, 0.0, 3.0};
+		Double [] arr2 = {2.9, -3.1, -3.0, 0.1, 3.0};
+		
+		// Target and parameters
+		Double tolerance = 1.0E-6;
+		Double [] target = {5.9, -6.1, -6.0, 0.1, 6.0};
+		
+		Double [] sum = ArrUtil.add(arr1, arr2);
+		
+		// Validation
+		assertTrue( ArrUtil.equal(target, sum, tolerance) );
+		
+	}
+	
+	@Test
+	public void constant() {
+		
+		// Inputs and parameters
+		Double constant = 2.99;
+		
+		// Target and parameters
+		Double tolerance = 1.0E-6;
+		Double [] target = {2.99, 2.99, 2.99};
+		
+		Double [] constArr = ArrUtil.constant(constant, 3);
+		
+		// Validation
+		assertTrue( ArrUtil.equal(target, constArr, tolerance) );
+		
+	}
+	
+	@Test
+	public void sequence() {
+		
+		// Inputs and parameters
+		Double interval = 0.1;
+		Integer size = 5;
+		
+		// Target and parameters
+		Double tolerance = 1.0E-6;
+		Double [] target = {0.0, 0.1, 0.2, 0.3, 0.4};
+		
+		Double [] result = ArrUtil.sequence(interval, size);
+		
+		// Validation
+		assertTrue( ArrUtil.equal(target, result, tolerance) );
+		
+	}
 
 }
