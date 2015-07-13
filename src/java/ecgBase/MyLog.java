@@ -51,8 +51,13 @@ public class MyLog {
 	public void initialize() {
 
 		String logFileDir = "./logs";
+		File dir = new File(logFileDir);
+		if ( !dir.exists() ) {
+			dir.mkdir();
+		}
 		String logFileName = "applog.log";
 		outFile = new File(logFileDir,logFileName);
+		
 		try {
 			fileWriter = new FileWriter(outFile);
 		} catch (IOException e) {

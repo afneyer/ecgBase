@@ -57,14 +57,17 @@ public class FftTest {
 		assertTrue(ArrUtil.equal(seq, targetReal, tolerance));
 		
 		// Validate imaginary array
-		Double [] targetImag = new Double[seqLength];
+		Double [] targetImag = ArrUtil.constant(0.0, seqLength);
 		targetImag[index] = -value;
 		targetImag[seqLength-index] = -value;
 		
 		assertTrue(ArrUtil.equal(seq, targetReal, tolerance));
 		
 		// Validate amplitude array
-		// TODO : validate amplitude array
+		Double [] targetAmp = ArrUtil.constant(0.0, freqSize);
+		Double ampValue = Math.sqrt(2*value*value);
+		targetAmp[index] = ampValue;
+		assertTrue(ArrUtil.equal(amp, targetAmp, tolerance));
 		
 	}
 	
