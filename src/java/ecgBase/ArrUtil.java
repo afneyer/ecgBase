@@ -67,5 +67,18 @@ public class ArrUtil {
 		return seq;
 		
 	}
+	
+	public static Double[] slope( Double[] inArray ) {
+		
+		int arrSize = inArray.length;
+		Double[] slope = new Double[arrSize];
+		// set the slope at 0 to the same value as the slope at 1 to avoid a discontinuity
+		slope[0] = inArray[1]-inArray[0];	
+		for (int i = 0; i < arrSize-1; i++) {
+			slope[i+1] = inArray[i+1]-inArray[i];
+		}
+		
+		return slope;
+	}
 
 }
