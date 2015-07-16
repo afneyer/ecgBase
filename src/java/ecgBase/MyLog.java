@@ -144,6 +144,28 @@ public class MyLog {
 		}
 
 	}
+	
+	public static void logChart(String inChartName, String inXLabel,
+			String inYLabel, String[] inLegend, Double[] inXData, Double[][] inYData) {
+		
+
+		double[] xDat = ArrayUtils.toPrimitive(inXData);
+		double[][] yDat = ArrUtil.toPrimitive(inYData);
+
+		String fileName = "./logs/" + inChartName;
+
+		// Create Chart
+		Chart chart = QuickChart.getChart(inChartName, inXLabel, inYLabel,
+				inLegend, xDat, yDat);
+		
+		try {
+			BitmapEncoder.saveBitmapWithDPI(chart, fileName, BitmapFormat.JPG, 300);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	}
 
 	/*
 	 * Returns a list of lines written to the log file. Mostly used for testing and not for large log files.

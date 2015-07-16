@@ -32,6 +32,9 @@ class EcgManager {
 	def heartRate
 	def heartRateStdDev
 	
+	def qrsStart = []
+	def qrsEnd = []
+	
 	EcgManager(long id) {
 		ecgDat = EcgData.get(id)
 		ecgDat.ecgDAO = this
@@ -116,8 +119,8 @@ class EcgManager {
 		def numLeads = leads.size()
 		def EcgLead newLead = new EcgLead("Square Lead")
 		
-		def EcgLead firstLead = leads[0]
-		def leadArraySize = firstLead.timeValueArray.size()
+		def EcgLead sqrLeadBase = leads[1]
+		def leadArraySize = sqrLeadBase.timeValueArray.size()
 		
 		def EcgLead lead
 		
@@ -129,7 +132,7 @@ class EcgManager {
 			
 			def squareVal = 0.0
 					
-			row.add( firstLead.timeValueArray[i][0] )
+			row.add( sqrLeadBase.timeValueArray[i][0] )
 			
 			for (def j = 0; j < leads.size(); j++) {
 				lead = leads[j]
@@ -145,7 +148,7 @@ class EcgManager {
 		}
 		
 	    newLead.setOrigin(0.0)
-	    newLead.setScale( firstLead.getScale() )
+	    newLead.setScale( sqrLeadBase.getScale() )
 	    newLead.setTimeValueArray(leadArray)
 			
 	    leads[leads.size()] = newLead
@@ -329,7 +332,7 @@ class EcgManager {
 			imagArray[i] = 0.0
 		}
 		
-		Fft.transform(valArray, imagArray)
+		def Double[] amp = Fft.transform(valArray)
 		
 		// def deltaf = 2 * Math.PI / ( curLead.getNumSamples() * curLead.getSampleInterval() )
 		def deltaf = 1.0 / ( curLead.getNumSamples() * curLead.getSampleInterval() )
@@ -339,14 +342,13 @@ class EcgManager {
 		applog.log "deltaf = " + deltaf
 		
 		def freq = deltaf
-		def freqGraphSize = timeValArray.size() / 2 - 1
+		def freqGraphSize = amp.length
 		def freqArray = []
 		
 		applog.log "TimeValueArray for FFT"
 		for (def i=0; i<freqGraphSize; i++) {
 			
-			def squareValue = new Double( Math.sqrt( valArray[i]**2 + imagArray[i]**2 ) )
-		    def row = [freq,squareValue]
+		    def row = [freq,amp[i]]
 			freqArray.add(row)
 			
 			freq += deltaf
@@ -507,53 +509,16 @@ class EcgManager {
 		Double[] RRIntervals = []
 		Double[] heartRates = []
 		
-		// TODO:current work
 		def Object[] valueArray = inLead.getValues()
 		
 		// determine the top percent of values
 		def topPercent = 0.05
 		
-		valueArray.sort()
-		// applog.log "Sorted Value Array " + valueArray.toString()
-		
-		// get the topPercent value
+
 		def numSamples = inLead.getNumSamples()
-		def Integer idx = new Integer( Math.round(inLead.numSamples*(1-topPercent)).intValue() )
-		applog.log "idx = " + idx
-		Double cutOff = valueArray[idx]
-		
-		applog.log "Cutoff " + cutOff
-		
-		valueArray = inLead.getValues()
-		// applog.log("UnsortedValues", valueArray)
-		
-		// determine R-Peaks
-		def peakCount = 0
-		def peakValue = 0.0
-		def peakIndex = 0
-		def aboveCutoff = false
-		for (def i=0; i<numSamples; i++) {
-			
-			if (valueArray[i] < cutOff) {
-				// here we are falling below the cut-off and we record the peak
-				if (aboveCutoff == true) {
-					peakCount++
-					rPeaks.add( peakIndex )
-					peakValue = 0.0 
-					aboveCutoff = false
-				}
-			} else { 
-				aboveCutoff = true
-				if ( valueArray[i] > peakValue ) {
-					peakValue = valueArray[i]
-					peakIndex = i
-				}
-			}
-		}
-		if (aboveCutoff == true) {
-			peakCount++
-			rPeaks.add( peakIndex )
-		}
+
+		rPeaks = ArrUtil.peaks(valueArray, 1-topPercent)
+
 		applog.log "rPeakArray = " + rPeaks.toString()
 		
 		def numBeats = rPeaks.size()-1
@@ -576,13 +541,141 @@ class EcgManager {
 		applog.log "heartRate [bps] = " + heartRate
 		
 		heartRate = 1/averageBeatLength * 60.0
-		applog.log "heartRate [bpm] = " + heartRate
-		
-		
+		applog.log "heartRate [bpm] = " + heartRate	
 		
 		heartRateStdDev = Stat.StdDev( heartRates )
 		applog.log "heartRate standard deviation [bpm] = " + heartRateStdDev
 		
+	}
+	
+	private void determineQrsInterval( EcgLead inLead ) {
+		
+		// determine initial approximation of QRS boundaries
+		def numBeats = rPeaks.size();
+		def factor = 0.2;
+		for (int i=0; i<numBeats; i++) {
+			def interval = 0;
+			if (i==0) { 
+				interval = rPeaks[1] - rPeaks[0];
+			} else {
+				interval = rPeaks[i] - rPeaks[i-1];
+		    }
+			def qrsExt = new Long( (long) Math.floor(factor * interval) );
+			applog.log("qrsExt = " + qrsExt);
+			
+			if (i==0) {
+				qrsStart[i] = Math.max(rPeaks[i]-qrsExt, 0);
+			} else {
+				qrsStart[i] = rPeaks[i]-qrsExt;
+			}
+			
+			if (i==numBeats-1) {
+				qrsEnd[i] = Math.min( rPeaks[i] + qrsExt, getNumSamples() )
+			} else {
+				qrsEnd[i] = rPeaks[i] + qrsExt
+			}
+		}
+		
+		applog.log("qrsStart", qrsStart);
+		applog.log("rPeaks", rPeaks);
+		applog.log("qrsEnd", qrsEnd);
+		
+		// TODO remove logging
+		Double[] values = inLead.getValues()
+		int trimPoint = 500;
+		Double [] tim = ArrUtil.sequence(1.0, trimPoint);
+		applog.logChart("DetQrsIntervalValues","tim","val","val(tim)",ArrUtil.trim(tim,trimPoint), ArrUtil.trim(values,trimPoint))
+		
+		
+		Double[] slope = ArrUtil.absSlope( values )
+		Double[] slopeFilt = Fft.fftFilter( slope, 200.0 )
+		slope = ArrUtil.getCopy(slopeFilt)
+		
+		// TODO remove logging
+		int trimPoint1 = 500;
+		Double [] tim1 = ArrUtil.sequence(1.0, trimPoint);
+		applog.logChart("DetQrsIntervalSlopeFiltered","tim","slope","fftSlopeFiltered(tim)",ArrUtil.trim(tim1,trimPoint1), ArrUtil.trim(slope,trimPoint1))
+		
+		for (int i=0; i<numBeats; i++) {
+			
+			Double maxDiff = 0.0;
+			int newStartIndex = qrsStart[i];
+			
+			// TODO : introduce delta i (minimum QRS size)
+			
+			// move the start index to a better place
+			for (int j=qrsStart[i]; j<rPeaks[i]; j++) {
+				Double qrsAverage = ArrUtil.rangeAverage(slope,j,rPeaks[i])
+				int befIndex
+				if (i==0) {
+					befIndex = 0
+				} else {
+					befIndex = qrsEnd[i-1]
+				}
+				Double beforeAverage = ArrUtil.rangeAverage(slope, befIndex, j-1)
+				Double diff = qrsAverage - beforeAverage;
+				if (diff > maxDiff) {
+					newStartIndex = j;
+					maxDiff = diff;
+				}
+			}
+			qrsStart[i] = newStartIndex;
+			applog.log("qrsStart[" + i + "] = " + qrsStart[i]);
+			
+			maxDiff = 0.0;
+			int newEndIndex = qrsEnd[i];
+			
+			// move the end index to a better place
+			for (int j=rPeaks[i]; j<=qrsEnd[i]; j++) {
+				Double qrsAverage = ArrUtil.rangeAverage(slope,rPeaks[i],j)
+				int afterIndex
+				if (i == numBeats-1) {
+					afterIndex = slope.length-1
+				} else {
+					afterIndex = qrsStart[i+1]
+				}
+				Double afterAverage = ArrUtil.rangeAverage(slope, j, afterIndex)
+				Double diff = qrsAverage - afterAverage;
+				if (diff > maxDiff) {
+					newEndIndex = j;
+					maxDiff = diff;
+				}
+			}
+			qrsEnd[i] = newEndIndex;
+			applog.log("qrsEnd[" + i + "] = " + qrsEnd[i]);
+		}
+			
+	
+	}
+	
+	private Double[] getQrsIndex( EcgLead inLead ) {
+		
+		Double[] qrsInd = ArrUtil.constant(0.0, getNumSamples() );
+		
+		for (int i=0; i<qrsStart.size; i++) {
+			for (int j=qrsStart[i]; j<=qrsEnd[i]; j++) {
+				qrsInd[j] = getRPeakAverage( inLead );
+			}
+		}
+
+		return qrsInd;
+	}
+	
+	private Double getRPeakAverage( EcgLead inLead ) {
+		
+		Double rPeakAverage = 0.0;
+		int pSize = rPeaks.size();
+		
+		for (int i=0; i<pSize; i++) {
+			rPeakAverage += inLead.values[rPeaks[i]];
+		}
+		
+		return rPeakAverage;
+	}
+	
+	public Integer getNumSamples() {
+		EcgLead lead = leads[0];
+		return lead.getNumSamples()
 	}
 	
 	String getSelectedGraphDataString( String inCode ) {

@@ -28,7 +28,7 @@ public class FftTest {
 		Double [] imag = ArrUtil.constant(0.0,seqLength);
 		Double [] xDat = ArrUtil.sequence( interval, seqLength );
 		
-		MyLog.logChart("Transform01SinCurve","X","Y", "sin(x)", xDat, seq);
+		MyLog.logChart("TestTransform01SinCurve","X","Y", "sin(x)", xDat, seq);
 		
 		Double[] amp = Fft.transform(seq, imag);
 		Double[] freq = ArrUtil.trim(xDat, amp.length );
@@ -37,7 +37,7 @@ public class FftTest {
 		applog.log("imag",imag);
 	
 		
-		MyLog.logChart("fftTransfrom","X","Y", "FFT Transform", freq, amp);
+		MyLog.logChart("TestTransform01FftTransfrom","X","Y", "FFT Transform", freq, amp);
 		
 		// Validate the result
 		int freqSize = Math.floorDiv(seqLength,2) - 1;
@@ -48,15 +48,13 @@ public class FftTest {
 		
 		// Validate real array
 		Double [] targetReal = ArrUtil.constant(0.0, seqLength);
-		int index = numPeriods;
-		Double value = 1.0 * seqLength / 2.0;
-		targetReal[index] = value;
-		targetReal[seqLength-index] = -value;
 		
 		applog.log("actualReal",seq,"targetReal",targetReal);
 		assertTrue(ArrUtil.equal(seq, targetReal, tolerance));
 		
 		// Validate imaginary array
+		int index = numPeriods;
+		Double value = 1.0 * seqLength / 2.0;
 		Double [] targetImag = ArrUtil.constant(0.0, seqLength);
 		targetImag[index] = -value;
 		targetImag[seqLength-index] = -value;
@@ -65,7 +63,7 @@ public class FftTest {
 		
 		// Validate amplitude array
 		Double [] targetAmp = ArrUtil.constant(0.0, freqSize);
-		Double ampValue = Math.sqrt(2*value*value);
+		Double ampValue = value;
 		targetAmp[index] = ampValue;
 		assertTrue(ArrUtil.equal(amp, targetAmp, tolerance));
 		
@@ -86,9 +84,7 @@ public class FftTest {
 	}
 	
 	@Test
-	public void testTransformAndChart() {
-		
-		
+	public void testfftFilter() {
 		
 		Integer numDataPointsPerPeriod = 100;
 		Integer numPeriods = 10;
@@ -97,7 +93,6 @@ public class FftTest {
 		Double pi = Math.PI;
 		
 		Double [] seq = new Double[seqLength];
-		Double [] imag = new Double[seqLength];
 		Double [] xDat = new Double[seqLength];
 		
 		// fill sequence with a sin-curve of frequency 1.0
@@ -105,39 +100,19 @@ public class FftTest {
 			seq[i] = Math.sin( 2*pi / numDataPointsPerPeriod * i);
 			seq[i] += Math.sin( 2*pi / numDataPointsPerPeriod * cutOffFreq * i); 
 			xDat[i] = new Double(i);
-			imag[i] = 0.0;
 		}
 		
-		MyLog.logChart("originalCurve","X","Y", "sin(x) + sin(10x)", xDat, seq);
+		MyLog.logChart("b1TestOriginalCurve","X","Y", "sin(x) + sin(10x)", xDat, seq);
 		
-		Double[] amp = Fft.transform(seq, imag);
-		Double[] freq = ArrUtil.trim(xDat, amp.length );
-		applog.log("amp", amp);		
+		Double[] filtered = Fft.fftFilter(seq,50.0);
 		
-		MyLog.logChart("fftTransfrom","X","Y", "FFT Transform", freq, amp);
+		MyLog.logChart("b1TestfilteredSignal","X","Y", "Filtered Signal", xDat, filtered);
 		
-		// cut off the values
+		// verify filtered sequence
+		Double tolerance = 1.0E-100;
+		Double[] targetSequence = genSinusSequence(numDataPointsPerPeriod,numPeriods);
 		
-		Integer cutOffIndex = new Double(seqLength / cutOffFreq).intValue();
-		applog.log("cutOffIndex = " + cutOffIndex );
-		
-		for (int i=cutOffIndex; i< ( seqLength+1 - cutOffIndex.intValue() ) ; i++ ) {
-			seq[i] = 0.0;
-			imag[i] = 0.0;
-		}
-		
-		amp = ArrUtil.amplitude(seq, imag);
-		applog.log("cutOffAmplitude",amp);
-		// int freqSize = Math.floorDiv(seqLength,2) - 1;
-		// applog.log("freqSize= " + freqSize);
-		// freq = ArrUtil.trim(xDat, freqSize );
-		// amp = ArrUtil.trim(amp, freqSize);
-		MyLog.logChart("fftTransformCutOff","X","Y", "FFT Transform Cut Off", xDat, amp);
-		
-		Fft.transform(imag, seq);
-		
-		MyLog.logChart("filteredSignal","X","Y", "Filtered Signal", xDat, seq);
-		
+		ArrUtil.equal(targetSequence, filtered, tolerance);
 		
 	}
 

@@ -42,7 +42,7 @@ public class Fft {
 	public static Double[] transform(Double[] inOutReal, Double[] inOutImag) {
 		
 		double[] real = ArrayUtils.toPrimitive(inOutReal);
-		double[] imag = ArrayUtils.toPrimitive(inOutReal);
+		double[] imag = ArrayUtils.toPrimitive(inOutImag);
 		
 		transform(real, imag);
 		
@@ -66,30 +66,71 @@ public class Fft {
 	 * Computes the discrete Fourier transform (DFT) of the given complex vector, storing the result back into the vector.
 	 * The vector can have any length. This is a wrapper function.
 	 */
-	public static void transform(Double[] inOutReal) {
+	public static Double[] transform(Double[] inReal) {
 		
-		double[] real = new double[inOutReal.length];
-		double[] imag = new double[inOutReal.length];
+		int size = inReal.length;
+		double[] real = ArrayUtils.toPrimitive(inReal);
+		double[] imag = new double[size];
 		
-		int size = inOutReal.length;
 		for (int i=1; i<size; i++) {
-			real[i] = inOutReal[i];
-			imag[i] = 0;
+			imag[i] = 0.0;
 		}
 		
 		transform(real, imag);
 		
-		for (int i=1; i<size; i++) {
-			inOutReal[i] = real[i];
+		int ampSize = Math.floorDiv(size, 2) - 1;
+		Double [] amplitude = new Double[ampSize];
+		
+		for (int i=0; i<size; i++) {
+			if (i<ampSize) {
+				amplitude[i] = Math.sqrt( real[i]*real[i] + imag[i]*imag[i]);
+			}
 		}
+		return amplitude;
 	}
 	
 	/*
 	 * inCutoffFrequence = 1 / n * delta t
 	 */
-	public static Double[] smoothFilter( Double[] inOutSeq, Double inCutoffFrequency ) {
-		Double [] smoothSeq = new Double[inOutSeq.length];
-		return smoothSeq;
+	public static Double[] fftFilter( Double[] inSeq, Double inCutoffFrequency ) {
+		
+		int seqLength = inSeq.length;
+		Double [] seq = ArrUtil.getCopy( inSeq );
+		Double [] xDat = ArrUtil.sequence(1.0, seqLength);
+		Double [] imag = ArrUtil.constant(0.0, seqLength);
+		
+        MyLog.logChart("b1SmoothFilterOriginalCurve","X","Y", "f(x)", xDat, inSeq);
+		
+		Double[] amp = Fft.transform(seq, imag);
+		Double[] freq = ArrUtil.trim(xDat, amp.length );
+		
+		applog.log("amp", amp);		
+		
+		MyLog.logChart("b1SmoothFilterFftTransfrom","X","Y", "FFT Transform", freq, amp);
+		
+		// cut off the values
+		
+		Integer cutOffIndex = new Double(inCutoffFrequency).intValue();
+		applog.log("cutOffIndex = " + cutOffIndex );
+		
+		for (int i=cutOffIndex; i< ( seqLength+1 - cutOffIndex.intValue() ) ; i++ ) {
+			seq[i] = 0.0;
+			imag[i] = 0.0;
+		}
+		
+		amp = ArrUtil.amplitude(seq, imag);
+		applog.log("cutOffAmplitude",amp);
+
+		MyLog.logChart("b1SmoothFilterFftTransformCutOff","X","Y", "FFT Transform Cut Off", xDat, amp);
+		
+		Fft.transform(imag, seq);
+		
+		Double scaleFactor = 1.0 / inSeq.length;
+		seq = ArrUtil.scale( seq, scaleFactor );
+		
+		MyLog.logChart("B1SmoothFilteredSignal","X","Y", "Filtered Signal", xDat, seq);
+		
+		return seq;
 	}
 	
 	public static void transform(double[] real, double[] imag) {
