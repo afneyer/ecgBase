@@ -352,7 +352,7 @@ class EcgManager {
 			freqArray.add(row)
 			
 			freq += deltaf
-			applog.log " Index i=" + i + " [ " + freq + " , " + squareValue + " ]"
+			applog.log( " Index i=" + i + " [ " + freq + " , " + amp[i] + " ]" )
 		}
 	
 		def graphDataStr = freqArray.toString()
@@ -673,7 +673,7 @@ class EcgManager {
 		return rPeakAverage;
 	}
 	
-	public Integer getNumSamples() {
+	public Integer getNumSamples() { 
 		EcgLead lead = leads[0];
 		return lead.getNumSamples()
 	}
