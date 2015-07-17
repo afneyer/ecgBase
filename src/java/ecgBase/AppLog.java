@@ -28,21 +28,21 @@ import com.xeiam.xchart.VectorGraphicsEncoder;
 import com.xeiam.xchart.VectorGraphicsEncoder.VectorGraphicsFormat;
 import com.xeiam.xchart.XChartPanel;
 
-public class MyLog {
+public class AppLog {
 	
-	private static MyLog logServiceInstance = null;
+	private static AppLog logServiceInstance = null;
 	private String lineSep = System.lineSeparator();
 	private File outFile = null;
 	private FileWriter fileWriter = null;
 	private String titleString = null;
 
-	private MyLog() {
+	private AppLog() {
 	}
 
-	public static MyLog getLogService() {
+	public static AppLog getLogService() {
 
 		if ( logServiceInstance == null ) {
-			logServiceInstance = new MyLog();
+			logServiceInstance = new AppLog();
 		}
 		
 		return logServiceInstance;

@@ -6,7 +6,7 @@ import org.springframework.aop.aspectj.RuntimeTestWalker.ThisInstanceOfResidueTe
 
 import ecgBase.EcgData
 import ecgBase.EcgManager
-import ecgBase.MyLog
+import ecgBase.AppLog
 import grails.transaction.Transactional
 
 
@@ -17,7 +17,7 @@ class EcgDataController {
 
     static allowedMethods = [save: "POST", update: "PUT", delete: "DELETE"]
 	
-	static MyLog appLog = MyLog.getLogService()
+	static AppLog appLog = AppLog.getLogService()
 
     def index(Integer max) {
         params.max = Math.min(max ?: 10, 100)

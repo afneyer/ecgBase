@@ -7,7 +7,7 @@ import org.junit.Test;
 
 public class ArrUtilTest {
 
-	public static MyLog applog = MyLog.getLogService();
+	public static AppLog applog = AppLog.getLogService();
 
 	@Test
 	public void testTrim() {

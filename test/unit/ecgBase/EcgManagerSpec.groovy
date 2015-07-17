@@ -16,7 +16,7 @@ import groovyx.gprof.Profiler
 @TestMixin(GrailsUnitTestMixin)
 class EcgManagerSpec extends Specification {
 	
-	def MyLog applog = MyLog.getLogService()
+	def AppLog applog = AppLog.getLogService()
 	def EcgManager ecgManager = null
 	def String testSampleFileName = "ecg01.xml"
 	def Integer squareLeadIndex = 12

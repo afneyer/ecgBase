@@ -31,7 +31,7 @@ import org.codehaus.groovy.runtime.ArrayUtil;
 
 public class Fft {
 	
-	public static MyLog applog = MyLog.getLogService();
+	public static AppLog applog = AppLog.getLogService();
 	
 	/* 
 	 * Computes the discrete Fourier transform (DFT) of the given complex vector, storing the result back into the vector.
@@ -99,14 +99,14 @@ public class Fft {
 		Double [] xDat = ArrUtil.sequence(1.0, seqLength);
 		Double [] imag = ArrUtil.constant(0.0, seqLength);
 		
-        MyLog.logChart("b1SmoothFilterOriginalCurve","X","Y", "f(x)", xDat, inSeq);
+        AppLog.logChart("b1SmoothFilterOriginalCurve","X","Y", "f(x)", xDat, inSeq);
 		
 		Double[] amp = Fft.transform(seq, imag);
 		Double[] freq = ArrUtil.trim(xDat, amp.length );
 		
 		applog.log("amp", amp);		
 		
-		MyLog.logChart("b1SmoothFilterFftTransfrom","X","Y", "FFT Transform", freq, amp);
+		AppLog.logChart("b1SmoothFilterFftTransfrom","X","Y", "FFT Transform", freq, amp);
 		
 		// cut off the values
 		
@@ -121,14 +121,14 @@ public class Fft {
 		amp = ArrUtil.amplitude(seq, imag);
 		applog.log("cutOffAmplitude",amp);
 
-		MyLog.logChart("b1SmoothFilterFftTransformCutOff","X","Y", "FFT Transform Cut Off", xDat, amp);
+		AppLog.logChart("b1SmoothFilterFftTransformCutOff","X","Y", "FFT Transform Cut Off", xDat, amp);
 		
 		Fft.transform(imag, seq);
 		
 		Double scaleFactor = 1.0 / inSeq.length;
 		seq = ArrUtil.scale( seq, scaleFactor );
 		
-		MyLog.logChart("B1SmoothFilteredSignal","X","Y", "Filtered Signal", xDat, seq);
+		AppLog.logChart("B1SmoothFilteredSignal","X","Y", "Filtered Signal", xDat, seq);
 		
 		return seq;
 	}

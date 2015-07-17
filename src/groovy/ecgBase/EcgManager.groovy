@@ -1,6 +1,6 @@
 package ecgBase
 
-import ecgBase.MyLog;
+import ecgBase.AppLog;
 import grails.util.Holders;
 import groovy.util.slurpersupport.GPathResult
 
@@ -23,7 +23,7 @@ class EcgManager {
 	
 	def initialized = false
 	
-	def MyLog applog = MyLog.getLogService()
+	def AppLog applog = AppLog.getLogService()
 	
 	// values set by determineHeartRate()
 	def rPeaks = []

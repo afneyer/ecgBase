@@ -1,10 +1,10 @@
-import ecgBase.MyLog;
+import ecgBase.AppLog;
 import ecgBase.EcgData;
 import ecgBase.EcgUtil;
 
 class BootStrap {
 	
-	def applog = MyLog.getLogService()
+	def applog = AppLog.getLogService()
 
 	def grailsApplication
 

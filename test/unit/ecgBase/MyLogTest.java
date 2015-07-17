@@ -9,7 +9,7 @@ public class MyLogTest {
 	@Test
 	public void testLogString() {
 
-		MyLog applog = MyLog.getLogService();
+		AppLog applog = AppLog.getLogService();
 		applog.initialize();
 
 		String logString = "Basic Log Test";
@@ -25,7 +25,7 @@ public class MyLogTest {
 	@Test
 	public void testLogArray() {
 
-		MyLog applog = MyLog.getLogService();
+		AppLog applog = AppLog.getLogService();
 		applog.initialize();
 
 		Double[] arrayToLog = { 1.0, 1.1, 1.2, 1.3 };
@@ -43,7 +43,7 @@ public class MyLogTest {
 	@Test
 	public void testLogTwoArrays() {
 
-		MyLog applog = MyLog.getLogService();
+		AppLog applog = AppLog.getLogService();
 		applog.initialize();
 
 		Double[] array1ToLog = { 1.0, 1.1, 1.2, 1.3 };
@@ -66,7 +66,7 @@ public class MyLogTest {
 		Double [] sinx = FftTest.genSinusSequence(100, 5);
 		Double [] x = ArrUtil.sequence(0.01, 500);
 		
-		MyLog.logChart("SinCurveTest", "X", "Y", "sin(x)", x, sinx);
+		AppLog.logChart("SinCurveTest", "X", "Y", "sin(x)", x, sinx);
 		
 	}
 

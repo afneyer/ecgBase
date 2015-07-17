@@ -16,7 +16,7 @@ import groovyx.gprof.Profiler
 @Mock(EcgData)
 class EcgUtilSpec extends Specification {
 
-	def MyLog applog = MyLog.getLogService()
+	def AppLog applog = AppLog.getLogService()
 
 	def setup() {
 		applog.log "running setup again"

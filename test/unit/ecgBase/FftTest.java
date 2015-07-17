@@ -12,7 +12,7 @@ import org.junit.Test;
 
 public class FftTest {
 	
-	MyLog applog = MyLog.getLogService();
+	AppLog applog = AppLog.getLogService();
 	Double tolerance = 1.0E-6;
 
 	@Test
@@ -28,7 +28,7 @@ public class FftTest {
 		Double [] imag = ArrUtil.constant(0.0,seqLength);
 		Double [] xDat = ArrUtil.sequence( interval, seqLength );
 		
-		MyLog.logChart("TestTransform01SinCurve","X","Y", "sin(x)", xDat, seq);
+		AppLog.logChart("TestTransform01SinCurve","X","Y", "sin(x)", xDat, seq);
 		
 		Double[] amp = Fft.transform(seq, imag);
 		Double[] freq = ArrUtil.trim(xDat, amp.length );
@@ -37,7 +37,7 @@ public class FftTest {
 		applog.log("imag",imag);
 	
 		
-		MyLog.logChart("TestTransform01FftTransfrom","X","Y", "FFT Transform", freq, amp);
+		AppLog.logChart("TestTransform01FftTransfrom","X","Y", "FFT Transform", freq, amp);
 		
 		// Validate the result
 		int freqSize = Math.floorDiv(seqLength,2) - 1;
@@ -102,11 +102,11 @@ public class FftTest {
 			xDat[i] = new Double(i);
 		}
 		
-		MyLog.logChart("b1TestOriginalCurve","X","Y", "sin(x) + sin(10x)", xDat, seq);
+		AppLog.logChart("b1TestOriginalCurve","X","Y", "sin(x) + sin(10x)", xDat, seq);
 		
 		Double[] filtered = Fft.fftFilter(seq,50.0);
 		
-		MyLog.logChart("b1TestfilteredSignal","X","Y", "Filtered Signal", xDat, filtered);
+		AppLog.logChart("b1TestfilteredSignal","X","Y", "Filtered Signal", xDat, filtered);
 		
 		// verify filtered sequence
 		Double tolerance = 1.0E-100;
