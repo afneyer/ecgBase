@@ -51,6 +51,28 @@ public class ArrUtil {
 		return true;
 	}
 	
+	public static Boolean equal(Double[][] inArray1, Double[][] inArray2,
+			Double tolerance) {
+
+		if (inArray1.length != inArray2.length) {
+			return false;
+		}
+		
+		if (inArray1[0].length != inArray2[0].length) {
+			return false;
+		}
+
+		for (int i = 0; i < inArray1.length; i++) {
+			for (int j=0; j < inArray1[0].length; j++) {
+				if (Math.abs(inArray1[i][j] - inArray2[i][j]) > tolerance) {
+					return false;
+				}
+			}
+
+		}
+		return true;
+	}
+	
 	public static Boolean equal(Integer[] inArray1, Integer[] inArray2) {
 
 		if (inArray1.length != inArray2.length) {
@@ -60,6 +82,27 @@ public class ArrUtil {
 		for (int i = 0; i < inArray1.length; i++) {
 			if (inArray1[i] != inArray2[i]) {
 				return false;
+			}
+
+		}
+		return true;
+	}
+	
+	public static Boolean equal(Integer[][] inArray1, Integer[][] inArray2) {
+
+		if (inArray1.length != inArray2.length) {
+			return false;
+		}
+		
+		if (inArray1[0].length != inArray2[0].length) {
+			return false;
+		}
+
+		for (int i = 0; i < inArray1.length; i++) {
+			for (int j=0; j < inArray1[0].length; j++) {
+				if (inArray1[i][j] != inArray2[i][j]) {
+					return false;
+				}
 			}
 
 		}
@@ -198,6 +241,13 @@ public class ArrUtil {
 	 * or are below the threshold if negative 
 	 */
 	public static Integer[] peaks(Double[] inArray, Double inThreshold ) {
+		return peakIntervals(inArray,inThreshold)[2];
+	}
+	
+	/*
+	 * 
+	 */
+	public static Integer[][] peakIntervals(Double[] inArray, Double inThreshold ) {
 		
 		Double scale;
 		if (inThreshold >= 0.0) {
@@ -209,6 +259,8 @@ public class ArrUtil {
 		
 		int arrSize = locArray.length;
 		Integer[] peaks = new Integer[arrSize];
+		Integer[] start = new Integer[arrSize];
+		Integer[] end = new Integer[arrSize];
 		
 		// sort the array
 		Double[] sortedArr = null;
@@ -232,12 +284,16 @@ public class ArrUtil {
 			if (locArray[i] < cutoff) {
 				// here we are falling below the cut-off and we record the peak
 				if (aboveCutoff == true) {
+					end[peakCount] = i-1;
 					peaks[peakCount] = peakIndex;
 					peakCount++;
 					peakValue = 0.0; 
 					aboveCutoff = false;
 				}
-			} else { 
+			} else {
+				if (!aboveCutoff) {
+					start[peakCount] = i;
+				}
 				aboveCutoff = true;
 				if ( locArray[i] >= peakValue ) {
 					peakValue = locArray[i];
@@ -246,12 +302,20 @@ public class ArrUtil {
 			}
 		}
 		if (aboveCutoff == true) {
+			end[peakCount] = arrSize-1;
 			peaks[peakCount]= peakIndex;
 			peakCount++;
 		}
 
+		start = ArrUtil.trim(start, peakCount);
 		peaks = ArrUtil.trim(peaks, peakCount);
-		return peaks;
+		end = ArrUtil.trim(end, peakCount);
+		Integer[][] peakIntervals = new Integer[3][peakCount];
+		peakIntervals[0] = start;
+		peakIntervals[1] = peaks;
+	    peakIntervals[2] = end;
+		
+	    return peakIntervals;
 	}
 
 }

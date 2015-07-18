@@ -1,7 +1,6 @@
 package ecgBase;
 
 import org.apache.commons.lang.ArrayUtils;
-import org.codehaus.groovy.runtime.ArrayUtil;
 
 
 /* 
@@ -99,14 +98,14 @@ public class Fft {
 		Double [] xDat = ArrUtil.sequence(1.0, seqLength);
 		Double [] imag = ArrUtil.constant(0.0, seqLength);
 		
-        AppLog.logChart("b1SmoothFilterOriginalCurve","X","Y", "f(x)", xDat, inSeq);
+        applog.logChart("b1SmoothFilterOriginalCurve","X","Y", "f(x)", xDat, inSeq);
 		
 		Double[] amp = Fft.transform(seq, imag);
 		Double[] freq = ArrUtil.trim(xDat, amp.length );
 		
 		applog.log("amp", amp);		
 		
-		AppLog.logChart("b1SmoothFilterFftTransfrom","X","Y", "FFT Transform", freq, amp);
+		applog.logChart("b1SmoothFilterFftTransfrom","X","Y", "FFT Transform", freq, amp);
 		
 		// cut off the values
 		
@@ -121,14 +120,14 @@ public class Fft {
 		amp = ArrUtil.amplitude(seq, imag);
 		applog.log("cutOffAmplitude",amp);
 
-		AppLog.logChart("b1SmoothFilterFftTransformCutOff","X","Y", "FFT Transform Cut Off", xDat, amp);
+		applog.logChart("b1SmoothFilterFftTransformCutOff","X","Y", "FFT Transform Cut Off", xDat, amp);
 		
 		Fft.transform(imag, seq);
 		
 		Double scaleFactor = 1.0 / inSeq.length;
 		seq = ArrUtil.scale( seq, scaleFactor );
 		
-		AppLog.logChart("B1SmoothFilteredSignal","X","Y", "Filtered Signal", xDat, seq);
+		applog.logChart("B1SmoothFilteredSignal","X","Y", "Filtered Signal", xDat, seq);
 		
 		return seq;
 	}

@@ -62,11 +62,14 @@ public class MyLogTest {
 	@Test
 	public void testLogChart() {
 		
+		AppLog applog = AppLog.getLogService();
+		applog.initialize();
+		
 		// create a basic sine curve
 		Double [] sinx = FftTest.genSinusSequence(100, 5);
 		Double [] x = ArrUtil.sequence(0.01, 500);
 		
-		AppLog.logChart("SinCurveTest", "X", "Y", "sin(x)", x, sinx);
+		applog.logChart("SinCurveTest", "X", "Y", "sin(x)", x, sinx);
 		
 	}
 

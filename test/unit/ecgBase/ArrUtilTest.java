@@ -1,8 +1,10 @@
 package ecgBase;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
-import org.apache.commons.lang.ArrayUtils;
 import org.junit.Test;
 
 public class ArrUtilTest {
@@ -95,6 +97,27 @@ public class ArrUtilTest {
 		assertTrue(ArrUtil.equal(arr1, arr2, tolerance));
 		tolerance = 0.01;
 		assertFalse(ArrUtil.equal(arr1, arr2, tolerance));
+
+	}
+	
+	@Test
+	public void testEqualTwoDim() {
+
+		// Inputs and parameters
+		Double[][] arr1 = { {3.0,-3.0} , {-3.0, 0.0}, {3.0,2.0} };
+		Double[][] arr2 = { {2.99, -3.01}, {-3.0, 0.0}, {3.0,2.0} };
+		Double[][] arr3 = { {3.0}, {-3.0}, {3.0} };
+		Double[][] arr4 = { {3.0,-3.0}, {-3.0, 0.0} };
+		Double[][] arr5 = { {3.0} };
+
+		// Target and parameters
+		Double tolerance = 0.02;
+
+		// Validation
+		assertTrue(ArrUtil.equal(arr1, arr2, tolerance));
+		assertFalse(ArrUtil.equal(arr1, arr3, tolerance));
+		assertFalse(ArrUtil.equal(arr1, arr4, tolerance));
+		assertFalse(ArrUtil.equal(arr1, arr5, tolerance));
 
 	}
 
@@ -304,6 +327,80 @@ public class ArrUtilTest {
 		// target05 = new Integer[]{ 100,200 };
 		target = new Integer[] { 0, 9, 21 };
 		result = ArrUtil.peaks(seq, cutOff);
+		assertTrue(ArrUtil.equal(target, result));
+
+	}
+	
+	@Test
+	public void testPeakIntervals() {
+
+		// Inputs and parameters
+		Double[] seq = { 0.0, 0.2, 0.4, 0.5, 0.4, 0.2, 0.0, -0.2, -0.4, -0.5,
+				-0.4, -0.2, 0.0, 0.2, 0.3, 0.35, 0.3, 0.2, 0.0, -0.2, -0.3,
+				-0.35, -0.3, -0.2, 0.0 };
+		
+		Double[] x = ArrUtil.sequence(1.0, 25);
+		applog.logChart("PeakIntervalTestData", "x", "y", "y(x)", x, seq);
+
+		// Target and parameters
+		// single peak
+		Double cutOff = 0.95;
+		Integer[][] target = {{2},{3},{4}};
+		Integer[][] result = ArrUtil.peakIntervals(seq, cutOff);
+		for (int i=0; i<result[0].length; i++) {
+			applog.log("PeakInterval [" + i + "] = " + result[0][i] + "|" + result[1][i] + "|" + result[2][i]  );
+		}
+		assertTrue(ArrUtil.equal(target, result));
+		
+		// multiple peak
+		cutOff = 0.7;
+		target = new Integer[][] {{1,13},{3,15},{5,17}};
+		result = ArrUtil.peakIntervals(seq, cutOff);
+		for (int i=0; i<result[0].length; i++) {
+			applog.log("PeakInterval [" + i + "] = " + result[0][i] + "|" + result[1][i] + "|" + result[2][i]  );
+		}
+		assertTrue(ArrUtil.equal(target, result));
+		
+
+		// multiple peak, the last value is a peak
+		cutOff = 0.5;
+		target = new Integer[][] {{0,12,24},{ 3,15,24 },{6,18,24}};
+		// target = new Integer[] { 3, 15, 24 };
+		result = ArrUtil.peakIntervals(seq, cutOff);
+		for (int i=0; i<result[0].length; i++) {
+			applog.log("PeakInterval [" + i + "] = " + result[0][i] + "|" + result[1][i] + "|" + result[2][i]  );
+		}
+		assertTrue(ArrUtil.equal(target, result));
+
+		// single negative peak
+		cutOff = -0.95;
+		target = new Integer[][] {{8},{9},{10}};
+		// target = new Integer[] { 9 };
+		result = ArrUtil.peakIntervals(seq, cutOff);
+		for (int i=0; i<result[0].length; i++) {
+			applog.log("PeakInterval [" + i + "] = " + result[0][i] + "|" + result[1][i] + "|" + result[2][i]  );
+		}
+		assertTrue(ArrUtil.equal(target, result));
+
+		// multiple negative peak
+		cutOff = -0.7;
+		target = new Integer[][] {{7,19},{9,21},{11,23}};
+		// target = new Integer[] { 9, 21 };
+		result = ArrUtil.peakIntervals(seq, cutOff);
+		for (int i=0; i<result[0].length; i++) {
+			applog.log("PeakInterval [" + i + "] = " + result[0][i] + "|" + result[1][i] + "|" + result[2][i]  );
+		}
+		assertTrue(ArrUtil.equal(target, result));
+
+		// multiple peak running staying above the cutoff until the end of the
+		// sequence
+		cutOff = -0.4;
+		target = new Integer[][] {{0,6,18},{0,9,21},{0,12,24}};
+		// target = new Integer[] { 0, 9, 21 };
+		result = ArrUtil.peakIntervals(seq, cutOff);
+		for (int i=0; i<result[0].length; i++) {
+			applog.log("PeakInterval [" + i + "] = " + result[0][i] + "|" + result[1][i] + "|" + result[2][i]  );
+		}
 		assertTrue(ArrUtil.equal(target, result));
 
 	}

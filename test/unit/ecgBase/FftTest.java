@@ -1,13 +1,8 @@
 package ecgBase;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
-import java.io.IOException;
-
-import com.xeiam.xchart.*;
-import com.xeiam.xchart.BitmapEncoder.BitmapFormat;
-
-import org.apache.commons.lang.ArrayUtils;
 import org.junit.Test;
 
 public class FftTest {
@@ -22,13 +17,11 @@ public class FftTest {
 		Integer numPeriods = 10;
 		Integer seqLength = numPointsPerPeriod*numPeriods;
 		Double interval = 1.0 / numPointsPerPeriod;
-		Double pi2 = 2*Math.PI;
-		
 		Double [] seq = genSinusSequence(numPointsPerPeriod, numPeriods);
 		Double [] imag = ArrUtil.constant(0.0,seqLength);
 		Double [] xDat = ArrUtil.sequence( interval, seqLength );
 		
-		AppLog.logChart("TestTransform01SinCurve","X","Y", "sin(x)", xDat, seq);
+		applog.logChart("TestTransform01SinCurve","X","Y", "sin(x)", xDat, seq);
 		
 		Double[] amp = Fft.transform(seq, imag);
 		Double[] freq = ArrUtil.trim(xDat, amp.length );
@@ -37,7 +30,7 @@ public class FftTest {
 		applog.log("imag",imag);
 	
 		
-		AppLog.logChart("TestTransform01FftTransfrom","X","Y", "FFT Transform", freq, amp);
+		applog.logChart("TestTransform01FftTransfrom","X","Y", "FFT Transform", freq, amp);
 		
 		// Validate the result
 		int freqSize = Math.floorDiv(seqLength,2) - 1;
@@ -102,11 +95,11 @@ public class FftTest {
 			xDat[i] = new Double(i);
 		}
 		
-		AppLog.logChart("b1TestOriginalCurve","X","Y", "sin(x) + sin(10x)", xDat, seq);
+		applog.logChart("b1TestOriginalCurve","X","Y", "sin(x) + sin(10x)", xDat, seq);
 		
 		Double[] filtered = Fft.fftFilter(seq,50.0);
 		
-		AppLog.logChart("b1TestfilteredSignal","X","Y", "Filtered Signal", xDat, filtered);
+		applog.logChart("b1TestfilteredSignal","X","Y", "Filtered Signal", xDat, filtered);
 		
 		// verify filtered sequence
 		Double tolerance = 1.0E-100;

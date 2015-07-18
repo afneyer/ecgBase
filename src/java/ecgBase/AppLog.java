@@ -1,32 +1,20 @@
 package ecgBase;
 
-import java.awt.Graphics2D;
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 
-import javax.imageio.ImageIO;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-
 import jline.internal.Log;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.ArrayUtils;
 
-import com.opensymphony.module.sitemesh.util.Container;
 import com.xeiam.xchart.BitmapEncoder;
+import com.xeiam.xchart.BitmapEncoder.BitmapFormat;
 import com.xeiam.xchart.Chart;
 import com.xeiam.xchart.QuickChart;
-import com.xeiam.xchart.BitmapEncoder.BitmapFormat;
-import com.xeiam.xchart.Series;
-import com.xeiam.xchart.SwingWrapper;
-import com.xeiam.xchart.VectorGraphicsEncoder;
-import com.xeiam.xchart.VectorGraphicsEncoder.VectorGraphicsFormat;
-import com.xeiam.xchart.XChartPanel;
 
 public class AppLog {
 	
@@ -123,7 +111,7 @@ public class AppLog {
 	    }
 	}
 
-	public static void logChart(String inChartName, String inXLabel,
+	public void logChart(String inChartName, String inXLabel,
 			String inYLabel, String inLegend, Double[] inXData, Double[] inYData) {
 		
 
@@ -145,7 +133,7 @@ public class AppLog {
 
 	}
 	
-	public static void logChart(String inChartName, String inXLabel,
+	public void logChart(String inChartName, String inXLabel,
 			String inYLabel, String[] inLegend, Double[] inXData, Double[][] inYData) {
 		
 

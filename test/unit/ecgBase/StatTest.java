@@ -50,6 +50,7 @@ public class StatTest {
 			test[i] = Math.random();
 		}
 		Double stdDev = Stat.StdDev(test);
+		assertNotNull( stdDev );
 	}
 	
 	@Test
