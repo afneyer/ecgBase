@@ -5,11 +5,17 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import org.junit.Before;
 import org.junit.Test;
 
 public class ArrUtilTest {
-
+	
 	public static AppLog applog = AppLog.getLogService();
+	
+	@Before
+	public void setup() {
+		applog.initialize();
+	}
 
 	@Test
 	public void testTrim() {
@@ -99,16 +105,16 @@ public class ArrUtilTest {
 		assertFalse(ArrUtil.equal(arr1, arr2, tolerance));
 
 	}
-	
+
 	@Test
 	public void testEqualTwoDim() {
 
 		// Inputs and parameters
-		Double[][] arr1 = { {3.0,-3.0} , {-3.0, 0.0}, {3.0,2.0} };
-		Double[][] arr2 = { {2.99, -3.01}, {-3.0, 0.0}, {3.0,2.0} };
-		Double[][] arr3 = { {3.0}, {-3.0}, {3.0} };
-		Double[][] arr4 = { {3.0,-3.0}, {-3.0, 0.0} };
-		Double[][] arr5 = { {3.0} };
+		Double[][] arr1 = { { 3.0, -3.0 }, { -3.0, 0.0 }, { 3.0, 2.0 } };
+		Double[][] arr2 = { { 2.99, -3.01 }, { -3.0, 0.0 }, { 3.0, 2.0 } };
+		Double[][] arr3 = { { 3.0 }, { -3.0 }, { 3.0 } };
+		Double[][] arr4 = { { 3.0, -3.0 }, { -3.0, 0.0 } };
+		Double[][] arr5 = { { 3.0 } };
 
 		// Target and parameters
 		Double tolerance = 0.02;
@@ -330,7 +336,7 @@ public class ArrUtilTest {
 		assertTrue(ArrUtil.equal(target, result));
 
 	}
-	
+
 	@Test
 	public void testPeakIntervals() {
 
@@ -338,70 +344,139 @@ public class ArrUtilTest {
 		Double[] seq = { 0.0, 0.2, 0.4, 0.5, 0.4, 0.2, 0.0, -0.2, -0.4, -0.5,
 				-0.4, -0.2, 0.0, 0.2, 0.3, 0.35, 0.3, 0.2, 0.0, -0.2, -0.3,
 				-0.35, -0.3, -0.2, 0.0 };
-		
+
 		Double[] x = ArrUtil.sequence(1.0, 25);
 		applog.logChart("PeakIntervalTestData", "x", "y", "y(x)", x, seq);
 
 		// Target and parameters
 		// single peak
 		Double cutOff = 0.95;
-		Integer[][] target = {{2},{3},{4}};
+		Integer[][] target = { { 2 }, { 3 }, { 4 } };
 		Integer[][] result = ArrUtil.peakIntervals(seq, cutOff);
-		for (int i=0; i<result[0].length; i++) {
-			applog.log("PeakInterval [" + i + "] = " + result[0][i] + "|" + result[1][i] + "|" + result[2][i]  );
+		for (int i = 0; i < result[0].length; i++) {
+			applog.log("PeakInterval [" + i + "] = " + result[0][i] + "|"
+					+ result[1][i] + "|" + result[2][i]);
 		}
 		assertTrue(ArrUtil.equal(target, result));
-		
+
 		// multiple peak
 		cutOff = 0.7;
-		target = new Integer[][] {{1,13},{3,15},{5,17}};
+		target = new Integer[][] { { 1, 13 }, { 3, 15 }, { 5, 17 } };
 		result = ArrUtil.peakIntervals(seq, cutOff);
-		for (int i=0; i<result[0].length; i++) {
-			applog.log("PeakInterval [" + i + "] = " + result[0][i] + "|" + result[1][i] + "|" + result[2][i]  );
+		for (int i = 0; i < result[0].length; i++) {
+			applog.log("PeakInterval [" + i + "] = " + result[0][i] + "|"
+					+ result[1][i] + "|" + result[2][i]);
 		}
 		assertTrue(ArrUtil.equal(target, result));
-		
 
 		// multiple peak, the last value is a peak
 		cutOff = 0.5;
-		target = new Integer[][] {{0,12,24},{ 3,15,24 },{6,18,24}};
+		target = new Integer[][] { { 0, 12, 24 }, { 3, 15, 24 }, { 6, 18, 24 } };
 		// target = new Integer[] { 3, 15, 24 };
 		result = ArrUtil.peakIntervals(seq, cutOff);
-		for (int i=0; i<result[0].length; i++) {
-			applog.log("PeakInterval [" + i + "] = " + result[0][i] + "|" + result[1][i] + "|" + result[2][i]  );
+		for (int i = 0; i < result[0].length; i++) {
+			applog.log("PeakInterval [" + i + "] = " + result[0][i] + "|"
+					+ result[1][i] + "|" + result[2][i]);
 		}
 		assertTrue(ArrUtil.equal(target, result));
 
 		// single negative peak
 		cutOff = -0.95;
-		target = new Integer[][] {{8},{9},{10}};
+		target = new Integer[][] { { 8 }, { 9 }, { 10 } };
 		// target = new Integer[] { 9 };
 		result = ArrUtil.peakIntervals(seq, cutOff);
-		for (int i=0; i<result[0].length; i++) {
-			applog.log("PeakInterval [" + i + "] = " + result[0][i] + "|" + result[1][i] + "|" + result[2][i]  );
+		for (int i = 0; i < result[0].length; i++) {
+			applog.log("PeakInterval [" + i + "] = " + result[0][i] + "|"
+					+ result[1][i] + "|" + result[2][i]);
 		}
 		assertTrue(ArrUtil.equal(target, result));
 
 		// multiple negative peak
 		cutOff = -0.7;
-		target = new Integer[][] {{7,19},{9,21},{11,23}};
+		target = new Integer[][] { { 7, 19 }, { 9, 21 }, { 11, 23 } };
 		// target = new Integer[] { 9, 21 };
 		result = ArrUtil.peakIntervals(seq, cutOff);
-		for (int i=0; i<result[0].length; i++) {
-			applog.log("PeakInterval [" + i + "] = " + result[0][i] + "|" + result[1][i] + "|" + result[2][i]  );
+		for (int i = 0; i < result[0].length; i++) {
+			applog.log("PeakInterval [" + i + "] = " + result[0][i] + "|"
+					+ result[1][i] + "|" + result[2][i]);
 		}
 		assertTrue(ArrUtil.equal(target, result));
 
 		// multiple peak running staying above the cutoff until the end of the
 		// sequence
 		cutOff = -0.4;
-		target = new Integer[][] {{0,6,18},{0,9,21},{0,12,24}};
+		target = new Integer[][] { { 0, 6, 18 }, { 0, 9, 21 }, { 0, 12, 24 } };
 		// target = new Integer[] { 0, 9, 21 };
 		result = ArrUtil.peakIntervals(seq, cutOff);
-		for (int i=0; i<result[0].length; i++) {
-			applog.log("PeakInterval [" + i + "] = " + result[0][i] + "|" + result[1][i] + "|" + result[2][i]  );
+		for (int i = 0; i < result[0].length; i++) {
+			applog.log("PeakInterval [" + i + "] = " + result[0][i] + "|"
+					+ result[1][i] + "|" + result[2][i]);
 		}
 		assertTrue(ArrUtil.equal(target, result));
+
+	}
+
+	@Test
+	public void minMax() {
+
+		// Inputs and parameters
+		Double[] seq = { 1.01, 1.1, -0.95, 0.93, -0.92, 0.92 };
+
+		// Target and parameters
+		Double tolerance = 1.0E-6;
+
+		assertEquals(1.1, ArrUtil.max(seq), tolerance);
+		assertEquals(-0.95, ArrUtil.min(seq), tolerance);
+
+	}
+
+	@Test
+	public void testKMeans() {
+
+		Double[] seq = null;
+		Integer k = null;
+		Double[] centers = null;
+		Integer[] target = null;
+
+		// Inputs and parameters for Test 1
+		seq = new Double[] { 0.0, 1.0 };
+		k = 2;
+		centers = null;
+		target = new Integer[] { 0, 1 };
+		Integer[] result = ArrUtil.kMeans(seq, k, centers);
+		assertTrue(ArrUtil.equal(result, target));
+
+		// Inputs and parameters for Test 2
+		seq = new Double[] { 0.0, 0.4, 1.0 };
+		k = 2;
+		centers = null;
+		target = new Integer[] { 0, 0, 1 };
+		result = ArrUtil.kMeans(seq, k, centers);
+		assertTrue(ArrUtil.equal(result, target));
+		
+		// Inputs and parameters for Test 3
+		seq = new Double[] { 0.0, 0.5, 1.0 };
+		k = 2;
+		centers = null;
+		target = new Integer[] { 0, 0, 1 };
+		result = ArrUtil.kMeans(seq, k, centers);
+		assertTrue(ArrUtil.equal(result, target));
+		
+		// Inputs and parameters for Test 4
+		seq = new Double[] { 0.0, 0.1, 0.3, 0.7, 0.9, 1.0 };
+		k = 2;
+		centers = null;
+		target = new Integer[] { 0, 0, 0, 1, 1, 1};
+		result = ArrUtil.kMeans(seq, k, centers);
+		assertTrue(ArrUtil.equal(result, target));
+		
+		// Inputs and parameters for Test 5
+		seq = new Double[] { 0.7, 0.1, 0.9, 1.0, 0.0, 0.3 };
+		k = 2;
+		centers = null;
+		target = new Integer[] { 1, 0, 1, 1, 0, 0 };
+		result = ArrUtil.kMeans(seq, k, centers);
+		assertTrue(ArrUtil.equal(result, target));
 
 	}
 
