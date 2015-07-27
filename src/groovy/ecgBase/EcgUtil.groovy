@@ -1,7 +1,7 @@
 package ecgBase
 
+import java.io.File;
 import grails.util.Holders;
-
 import java.sql.Timestamp
 import java.text.SimpleDateFormat;
 
@@ -59,29 +59,64 @@ class EcgUtil {
 		def filePath = Holders.config.uploadFolder
 	
 			new File(filePath).eachFile() { file ->
-				applog.log "Uploading " + file.getName()
-				def ecgDataInstance = new EcgData()
-				ecgDataInstance.fileName = file.getName()
-				ecgDataInstance.fileData = file.getBytes()
-				ecgDataInstance.identifier = EcgData.count()
-				ecgDataInstance.uploadDate = new Date()
-				ecgDataInstance.save()
+				def ecgDataInstance = uploadSampleFile(file)
 			}
 	}
 	
 	static EcgData uploadSampleFile( String inFileName ) {
 		
-		def filePath = Holders.config.uploadFolder
-		applog.log "Uploading " + inFileName
+		def filePath = Holders.config.uploadFolder 
 		def file = new File(filePath,inFileName)
-		def ecgDataInstance = new EcgData()
-		ecgDataInstance.fileName = file.getName()
-		ecgDataInstance.fileData = file.getBytes()
-		ecgDataInstance.identifier = EcgData.count()
-		ecgDataInstance.uploadDate = new Date()
-		ecgDataInstance.save()
-		
+		def ecgDataInstance = uploadSampleFile(file)		
 		return ecgDataInstance
+		
+	}
+	
+	static EcgData uploadSampleFile( File inFile ) {
+
+		applog.log "Uploading " + inFile.getName()
+		def ecgDataInstance = new EcgData( inFile )
+		return ecgDataInstance
+	
+	}
+	
+	/*
+	 * Returns the xml-type of the byte array, null if it cannot identify it
+	 */
+	static boolean isHL7( byte[] inBytes ) {
+
+		def byte[] fileData = inBytes
+		def xmlDataStr = new String(fileData)
+
+		try {
+			
+			def result = new XmlSlurper(false,false,false).parseText(xmlDataStr)
+			// TODO remove 
+			// applog.log( result.text() )
+
+			def xmlns = result.@xmlns
+			// TODO remove
+			applog.log 'xmlns = ' + xmlns
+
+			if (xmlns == 'urn:hl7-org:v3') return true;
+		
+		} catch (Exception e) {
+			return false
+		}
+
+
+		return false
+	}
+	
+	static boolean isOpenBCI( byte[] inBytes ) {
+		 
+		String firstLine = '%OpenBCI Raw EEG Data'
+		int flength = firstLine.length()
+		if (inBytes.size() < flength) return false;
+		
+		byte[] inFlBytes = inBytes[0..flength-1]
+		String inFirstLine = new String( inFlBytes )
+		return firstLine == inFirstLine
 		
 	}
 }

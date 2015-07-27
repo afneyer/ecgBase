@@ -40,6 +40,15 @@
 					
 				</li>
 				</g:if>
+				
+				<g:if test="${ecgDataInstance?.fileType}">
+				<li class="fieldcontain">
+					<span id="fileType-label" class="property-label"><g:message code="ecgData.fileType.label" default="File Type" /></span>
+					
+						<span class="property-value" aria-labelledby="fileType-label"><g:fieldValue bean="${ecgDataInstance}" field="fileType"/></span>
+					
+				</li>
+				</g:if>
 			
 				<g:if test="${ecgDataInstance?.fileData}">
 				<li class="fieldcontain">

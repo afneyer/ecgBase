@@ -39,11 +39,7 @@ class EcgDataController {
 		if(file.empty) {
 			flash.message = "File cannot be empty"
 		} else {
-			def ecgDataInstance = new EcgData()
-			ecgDataInstance.fileName = file.originalFilename
-			ecgDataInstance.fileData = file.getBytes()
-			ecgDataInstance.identifier = EcgData.count()
-			ecgDataInstance.save()
+			def ecgDataInstance = new EcgData( file )
 		}
 		redirect (action:'index')
 	}

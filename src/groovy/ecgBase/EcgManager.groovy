@@ -440,7 +440,7 @@ class EcgManager {
 			def row = []		
 			row.add( lead.timeValueArray[i][0] )
 			
-			for (def j = 0; j < leads.size(); j++) {
+			for (def j = 0; j < leads.length(); j++) {
 				lead = leads[j]
 				// appLog.log " j = " + j + " i = " + i
 				row.add( lead.timeValueArray[i][1] + (leads.size-1-j)*verticalOffset )
@@ -512,12 +512,12 @@ class EcgManager {
 		def Object[] valueArray = inLead.getValues()
 		
 		// determine the top percent of values
-		def topPercent = 0.05
+		def topPercent = 0.8
 		
 
 		def numSamples = inLead.getNumSamples()
 
-		rPeaks = ArrUtil.peaks(valueArray, 1-topPercent)
+		rPeaks = ArrUtil.peaks(valueArray, 0.8, 1.0)
 
 		applog.log "rPeakArray = " + rPeaks.toString()
 		
@@ -646,6 +646,54 @@ class EcgManager {
 		}
 			
 	
+	}
+	
+	private void determineQrsInterval01( EcgLead inLead ) {
+		
+		// TODO remove logging
+		Double[] values = inLead.getValues()
+		int trimPoint = 500;
+		Double [] tim = ArrUtil.sequence(1.0, trimPoint);
+		applog.logChart("DetQrsIntervalValues","tim","val","val(tim)",ArrUtil.trim(tim,trimPoint), ArrUtil.trim(values,trimPoint))
+		
+		
+		Double[] slope = ArrUtil.absSlope( values )
+		Double[] slopeFilt = Fft.fftFilter( slope, 200.0 )
+		slope = ArrUtil.getCopy(slopeFilt)
+		
+		// TODO remove logging
+		int trimPoint1 = 500;
+		Double [] tim1 = ArrUtil.sequence(1.0, trimPoint);
+		applog.logChart("DetQrsIntervalSlopeFiltered","tim","slope","fftSlopeFiltered(tim)",ArrUtil.trim(tim1,trimPoint1), ArrUtil.trim(slope,trimPoint1))
+		
+		Double [] centers = null;
+		Integer [] clusterIndex = ArrUtil.kMeans( slopeFilt, 2, centers )
+		
+		Integer count = 0;
+		for (int i=0; i<values.size(); i++) {
+			if (clusterIndex[i] == 0) {
+				if (i>0 && clusterIndex[i-1] == 1) {
+					qrsStart[count]=i;
+					applog.log("qrsStart[" + count + "] = " + qrsStart[i]);
+				}
+			} else {
+				if (i>0 && clusterIndex[i-1] == 0) {
+					qrsEnd[count] = i;
+					applog.log("qrsEnd[" + count + "] = " + qrsEnd[i]);
+					
+					count++;	
+				}
+				if (i==0) {
+					qrsStart[count] = i;
+					applog.log("qrsStart[" + count + "] = " + qrsStart[i]);
+				}
+				if (i==values.size()-1) {
+					qrsEnd[count] = i;
+					applog.log("qrsEnd[" + count + "] = " + qrsEnd[i]);
+				}
+			}
+			applog.log("qrsStart[" + count + "] = " + qrsStart[i]);	
+		}	
 	}
 	
 	private Double[] getQrsIndex( EcgLead inLead ) {

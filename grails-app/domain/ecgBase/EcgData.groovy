@@ -7,14 +7,25 @@ class EcgData {
 	Date uploadDate = new Date()
 	byte[] fileData
 	EcgManager ecgDAO = null
+	String dataFormat
 	
+	static formatHL7 = "HL7"
+	static formatOpenBCI = "OpenBCI"
+	static formatDICOM = "DICOM"
+	static formatAEcg = "aEcg"
+	static formatBinary = "UnknownBinary"
+	static formatText = "UnknownText"
+	
+	static dataFormats = [ formatHL7, formatOpenBCI, formatDICOM, formatAEcg, formatBinary,formatText]
 	static AppLog applog = AppLog.getLogService()
 	
 	static constraints = {
 		identifier(nullable:true)
 		fileName(blank:false,nullable:false)
 		fileData maxSize: 1024 * 1024 * 10 			// 10 MB Limit
+		dataFormat(nullable:true, inList:dataFormats)
 	}
+
 
 	/*
 	static mapping = {
@@ -23,12 +34,46 @@ class EcgData {
 
 	static transients = ['ecgDAO']
 	
+	EcgData() {
+	}
+	
+	EcgData( File file ) {
+		EcgData ecgDat = new EcgData();
+		ecgDat.fileName = file.getName()
+		ecgDat.fileData = file.getBytes()
+		ecgDat.identifier = EcgData.count()
+		ecgDat.uploadDate = new Date()
+		ecgDat.dataFormat = determineDataFormat(ecgDat.fileData)
+		applog.log "Dataformat = " + ecgDat.dataFormat
+		ecgDat.save()
+	}
+	
 	EcgManager initDAO () {
 		if (ecgDAO == null) {
 			ecgDAO = new EcgManager(id)
 		}
 		return ecgDAO
 	}
+	
+	static String determineDataFormat( byte[] inBytes) {
+		
+		int bSize = inBytes.size()
+		if (bSize > 500) bSize=500;
+		byte[] beginning = inBytes[0..bSize-1]
+		
+		String dataFormat = null;
+		if ( EcgUtil.isHL7(inBytes) ) {
+			return formatHL7
+		}
+		if ( EcgUtil.isOpenBCI(beginning) ) {
+			return formatOpenBCI
+	    }
+		if ( FileUtil.isBinary(beginning) ) {
+			return formatBinary
+		} else {
+			return formatText
+		}	
+	} 
 	
 	String getFileDataStr32() {
 		String str = new String(fileData)

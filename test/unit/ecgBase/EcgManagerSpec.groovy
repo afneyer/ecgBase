@@ -82,7 +82,7 @@ class EcgManagerSpec extends Specification {
 		
 		applog.logChart("a1ecgValues","tim","val","val(tim)",ArrUtil.trim(tim,trimPoint), ArrUtil.trim(val,trimPoint))
 		applog.logChart("a1ecgValuesSlope","tim","slope","slope(tim)",ArrUtil.trim(tim,trimPoint), ArrUtil.trim(absSlope,trimPoint))
-		applog.logChart("a1qrsInd","tim","qrsInd","qrsInd(time)",ArrUtil.trim(tim, trimPoint), ArrUtil.trim(qrsInd, trimPoint))
+ 		applog.logChart("a1qrsInd","tim","qrsInd","qrsInd(time)",ArrUtil.trim(tim, trimPoint), ArrUtil.trim(qrsInd, trimPoint))
 		applog.logChart("a1fftSlope","fre","fft","fftSlope(fre)",ArrUtil.sequence(1.0,fft.length),fft)
 		applog.logChart("a1SlopeFiltered","fre","fft","fftSlopeFiltered(tim)",ArrUtil.trim(tim,trimPoint), ArrUtil.trim(valFiltered,trimPoint))
 		
@@ -128,6 +128,7 @@ class EcgManagerSpec extends Specification {
 		applog.log "Exiting test determineHeartQrsInterval"
 	}
 	
+	
 
 	void "test profileGprof"() {
 		applog.log "Entering test profile"
@@ -147,23 +148,53 @@ class EcgManagerSpec extends Specification {
 		applog.log "Exiting test profile"
 
 	}
+	
+	
 
 	void "test manualExploration"() {
 
 		applog.log "Entering test manualExploration"
 
+		ecgManager.determineHeartRate()
 		def EcgLead lead = ecgManager.leads[1]
 		def arrSize = lead.getNumSamples()
 		def values = lead.getValues()
-		def timSeq = lead.getTimes()
-		def slope = ArrUtil.absSlope( values )
+		
+		def tim = lead.getTimes()
+		def slope = ArrUtil.slope(values)
+		def absSlope = ArrUtil.absSlope( values )
+		def trimPoint = 500;
 
-		applog.logChart("slopeChart","time","slope","slope(t)",timSeq, slope)
+		applog.logChart("a2Values","tim","val","val(tim)",ArrUtil.trim(tim,trimPoint), ArrUtil.trim(values,trimPoint))
+		
+		applog.logChart("a2Slope","tim","slope","slope(tim)",ArrUtil.trim(tim,trimPoint), ArrUtil.trim(slope,trimPoint))
+		applog.logChart("a2AbsSlope","tim","slope","slope(tim)",ArrUtil.trim(tim,trimPoint), ArrUtil.trim(absSlope,trimPoint))
 
-		def amp = Fft.transform(values)
-		def freq = ArrUtil.trim(timSeq,amp.length )
+		Double[] slopeFiltered = Fft.fftFilter(absSlope,500)
+		applog.logChart("a2SlopeFiltered","tim","slopeFilt","slopeFiltered(tim)",ArrUtil.trim(tim,trimPoint), ArrUtil.trim(slopeFiltered,trimPoint))
 
-		applog.logChart("slopeChartFft","freq","amp","amp(f)",freq, amp)
+		// kMeans algorithm with raw slope
+		Double[] clusterMeans = null;
+		Integer[] clusterIndex = ArrUtil.kMeans(absSlope,2,clusterMeans);
+		Double[] clusterDbl = ArrUtil.getCopy(clusterIndex);
+		applog.logChart("a2ClusterIndexRaw","tim","index","index(tim)",ArrUtil.trim(tim,trimPoint), ArrUtil.trim(clusterDbl,trimPoint))
+		
+		// kMeans algorithm with fft-filtered slope
+		clusterMeans = null;
+		clusterIndex = ArrUtil.kMeans(slopeFiltered,2,clusterMeans);
+		clusterDbl = ArrUtil.getCopy(clusterIndex);
+		applog.logChart("a2ClusterIndexFftFiltered","tim","index","index(tim)",ArrUtil.trim(tim,trimPoint), ArrUtil.trim(clusterDbl,trimPoint))
+		
+		// peak algorithm
+		Double factor = 0.2;
+		Integer[][] peakIntervals = ArrUtil.peakIntervals(slopeFiltered,factor,1.0)
+		applog.log("qrsStart",peakIntervals[0]);
+		applog.log("qrsPeak",peakIntervals[1]);
+		applog.log("qrsEnd",peakIntervals[2]);
+		ecgManager.qrsStart = peakIntervals[0];
+		ecgManager.qrsEnd = peakIntervals[2];
+
+		// applog.logChart("a2ClusterIndexFftFiltered","tim","index","intex(tim)",ArrUtil.trim(tim,trimPoint), ArrUtil.trim(clusterDbl,trimPoint))
 
 		expect:
 		squareLeadCode != null

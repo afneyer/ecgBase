@@ -38,6 +38,9 @@
 
 					<g:sortableColumn property="fileName"
 						title="${message(code: 'ecgData.fileName.label', default: 'File Name')}" />
+						
+					<g:sortableColumn property="fileType"
+						title="${message(code: 'ecgData.fileType.label', default: 'File Type')}" />
 
 					<g:sortableColumn property="fileData"
 						title="${message(code: 'ecgData.fileData.label', default: 'File Data')}" />

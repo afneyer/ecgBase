@@ -298,41 +298,41 @@ public class ArrUtilTest {
 
 		// Target and parameters
 		// single peak
-		Double cutOff = 0.95;
+		Double cutOff = 0.4;
 		Integer[] target = { 3 };
-		Integer[] result = ArrUtil.peaks(seq, cutOff);
+		Integer[] result = ArrUtil.peaks(seq, cutOff,1.0);
 		assertTrue(ArrUtil.equal(target, result));
 
 		// multiple peak
-		cutOff = 0.7;
+		cutOff = 0.2;
 		target = new Integer[] { 3, 15 };
-		result = ArrUtil.peaks(seq, cutOff);
+		result = ArrUtil.peaks(seq, cutOff,1.0);
 		assertTrue(ArrUtil.equal(target, result));
 
 		// multiple peak, the last value is a peak
-		cutOff = 0.5;
+		cutOff = 0.0;
 		target = new Integer[] { 3, 15, 24 };
-		result = ArrUtil.peaks(seq, cutOff);
+		result = ArrUtil.peaks(seq, cutOff,1.0);
 		assertTrue(ArrUtil.equal(target, result));
 
 		// single negative peak
-		cutOff = -0.95;
+		cutOff = 0.4;
 		target = new Integer[] { 9 };
-		result = ArrUtil.peaks(seq, cutOff);
+		result = ArrUtil.peaks(seq, cutOff,-1.0);
 		assertTrue(ArrUtil.equal(target, result));
 
 		// multiple negative peak
-		cutOff = -0.7;
+		cutOff = 0.2;
 		target = new Integer[] { 9, 21 };
-		result = ArrUtil.peaks(seq, cutOff);
+		result = ArrUtil.peaks(seq, cutOff,-1.0);
 		assertTrue(ArrUtil.equal(target, result));
 
 		// multiple peak running staying above the cutoff until the end of the
 		// sequence
-		cutOff = -0.4;
+		cutOff = 0.0;
 		// target05 = new Integer[]{ 100,200 };
 		target = new Integer[] { 0, 9, 21 };
-		result = ArrUtil.peaks(seq, cutOff);
+		result = ArrUtil.peaks(seq, cutOff,-1.0);
 		assertTrue(ArrUtil.equal(target, result));
 
 	}
@@ -350,9 +350,9 @@ public class ArrUtilTest {
 
 		// Target and parameters
 		// single peak
-		Double cutOff = 0.95;
+		Double cutOff = 0.4;
 		Integer[][] target = { { 2 }, { 3 }, { 4 } };
-		Integer[][] result = ArrUtil.peakIntervals(seq, cutOff);
+		Integer[][] result = ArrUtil.peakIntervals(seq, cutOff, 1.0);
 		for (int i = 0; i < result[0].length; i++) {
 			applog.log("PeakInterval [" + i + "] = " + result[0][i] + "|"
 					+ result[1][i] + "|" + result[2][i]);
@@ -360,9 +360,9 @@ public class ArrUtilTest {
 		assertTrue(ArrUtil.equal(target, result));
 
 		// multiple peak
-		cutOff = 0.7;
+		cutOff = 0.2;
 		target = new Integer[][] { { 1, 13 }, { 3, 15 }, { 5, 17 } };
-		result = ArrUtil.peakIntervals(seq, cutOff);
+		result = ArrUtil.peakIntervals(seq, cutOff,1.0);
 		for (int i = 0; i < result[0].length; i++) {
 			applog.log("PeakInterval [" + i + "] = " + result[0][i] + "|"
 					+ result[1][i] + "|" + result[2][i]);
@@ -370,10 +370,10 @@ public class ArrUtilTest {
 		assertTrue(ArrUtil.equal(target, result));
 
 		// multiple peak, the last value is a peak
-		cutOff = 0.5;
+		cutOff = 0.0;
 		target = new Integer[][] { { 0, 12, 24 }, { 3, 15, 24 }, { 6, 18, 24 } };
 		// target = new Integer[] { 3, 15, 24 };
-		result = ArrUtil.peakIntervals(seq, cutOff);
+		result = ArrUtil.peakIntervals(seq, cutOff,1.0);
 		for (int i = 0; i < result[0].length; i++) {
 			applog.log("PeakInterval [" + i + "] = " + result[0][i] + "|"
 					+ result[1][i] + "|" + result[2][i]);
@@ -381,10 +381,10 @@ public class ArrUtilTest {
 		assertTrue(ArrUtil.equal(target, result));
 
 		// single negative peak
-		cutOff = -0.95;
+		cutOff = 0.4;
 		target = new Integer[][] { { 8 }, { 9 }, { 10 } };
 		// target = new Integer[] { 9 };
-		result = ArrUtil.peakIntervals(seq, cutOff);
+		result = ArrUtil.peakIntervals(seq, cutOff,-1.0);
 		for (int i = 0; i < result[0].length; i++) {
 			applog.log("PeakInterval [" + i + "] = " + result[0][i] + "|"
 					+ result[1][i] + "|" + result[2][i]);
@@ -392,10 +392,10 @@ public class ArrUtilTest {
 		assertTrue(ArrUtil.equal(target, result));
 
 		// multiple negative peak
-		cutOff = -0.7;
+		cutOff = 0.2;
 		target = new Integer[][] { { 7, 19 }, { 9, 21 }, { 11, 23 } };
 		// target = new Integer[] { 9, 21 };
-		result = ArrUtil.peakIntervals(seq, cutOff);
+		result = ArrUtil.peakIntervals(seq, cutOff, -1.0);
 		for (int i = 0; i < result[0].length; i++) {
 			applog.log("PeakInterval [" + i + "] = " + result[0][i] + "|"
 					+ result[1][i] + "|" + result[2][i]);
@@ -404,10 +404,10 @@ public class ArrUtilTest {
 
 		// multiple peak running staying above the cutoff until the end of the
 		// sequence
-		cutOff = -0.4;
+		cutOff = 0.0;
 		target = new Integer[][] { { 0, 6, 18 }, { 0, 9, 21 }, { 0, 12, 24 } };
 		// target = new Integer[] { 0, 9, 21 };
-		result = ArrUtil.peakIntervals(seq, cutOff);
+		result = ArrUtil.peakIntervals(seq, cutOff, -1.0);
 		for (int i = 0; i < result[0].length; i++) {
 			applog.log("PeakInterval [" + i + "] = " + result[0][i] + "|"
 					+ result[1][i] + "|" + result[2][i]);

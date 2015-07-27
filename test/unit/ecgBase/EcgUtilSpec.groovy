@@ -59,4 +59,65 @@ class EcgUtilSpec extends Specification {
 		expect:
 		grailsApplication != null
 	}
+	
+	void "test isHL7"() {
+		
+		String str = '''<?xml version="1.0" encoding="utf-8"?>
+		    <AnnotatedECG xmlns="urn:hl7-org:v3" xmlns:voc="urn:hl7-org:v3/voc"
+			xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+			xsi:schemaLocation="urn:hl7-org:v3 ../schema/PORT_MT020001.xsd" type="Observation">
+			<id root="61d1a24f-b47e-41aa-ae95-f8ac302f4eeb"/>
+			</AnnotatedECG>'''
+		
+		byte[] bytes = str.getBytes();
+		
+		boolean isHL7 = EcgUtil.isHL7(bytes)
+		
+		expect:
+		isHL7 == true
+		grailsApplication != null
+		
+	}
+	
+	void "test isHL7Binary"() {
+		
+		byte[] bytes = new byte[1];
+		byte b = 0x08;
+		bytes[0] = b;
+		
+		boolean isHL7 = EcgUtil.isHL7(bytes)
+		
+		expect:
+		isHL7 == false
+	
+	}
+	
+	void "test isOpenBCI"() {
+		
+		String str = '''%OpenBCI Raw EEG Data
+             %
+             %Sample Rate = 250.0 Hz'''
+		
+		byte[] bytes = str.getBytes();
+		
+		boolean isOpenBCI = EcgUtil.isOpenBCI(bytes)
+		
+		expect:
+		isOpenBCI == true
+	
+	}
+	
+	void "test isOpenBCIBinary"() {
+		
+		byte[] bytes = new byte[1];
+		byte b = 0x08;
+		bytes[0] = b;
+		
+		boolean isOpenBCI = EcgUtil.isOpenBCI(bytes)
+		
+		expect:
+		isOpenBCI == false
+	
+	}
+		
 }

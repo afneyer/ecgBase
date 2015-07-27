@@ -242,6 +242,16 @@ public class ArrUtil {
 		}
 		return cp;
 	}
+	
+	public static Double[] getCopy(Integer[] inArray) {
+
+		int arrSize = inArray.length;
+		Double[] cp = new Double[arrSize];
+		for (int i = 0; i < arrSize; i++) {
+			cp[i] = inArray[i].doubleValue();
+		}
+		return cp;
+	}
 
 	public static Double[] scale(Double[] inArray, Double scaleFactor) {
 
@@ -268,39 +278,39 @@ public class ArrUtil {
 	 * the threshold is given in % of the number of values that exceed the
 	 * threshold if positive or are below the threshold if negative
 	 */
-	public static Integer[] peaks(Double[] inArray, Double inThreshold) {
-		return peakIntervals(inArray, inThreshold)[2];
+	public static Integer[] peaks(Double[] inArray, Double inThreshold, Double inScale) {
+		return peakIntervals(inArray, inThreshold,inScale)[1];
 	}
 
 	/*
 	 * 
 	 */
-	public static Integer[][] peakIntervals(Double[] inArray, Double inThreshold) {
+	public static Integer[][] peakIntervals(Double[] inArray, Double inThreshold, Double inScale) {
 
-		Double scale;
-		if (inThreshold >= 0.0) {
-			scale = 1.0;
-		} else {
-			scale = -1.0;
-		}
-		Double[] locArray = ArrUtil.scale(inArray, scale);
+		Double[] locArray = ArrUtil.scale(inArray, inScale);
 
 		int arrSize = locArray.length;
 		Integer[] peaks = new Integer[arrSize];
 		Integer[] start = new Integer[arrSize];
 		Integer[] end = new Integer[arrSize];
 
+		Double max = ArrUtil.max(inArray);
+		Double min = ArrUtil.min(inArray);
+		Double cutoff = (max - min)*Math.abs(inThreshold);
+		
 		// sort the array
-		Double[] sortedArr = null;
-		if (inThreshold >= 0.0) {
-			sortedArr = ArrUtil.getCopy(locArray);
-		} else {
-			sortedArr = ArrUtil.scale(locArray, -1.0);
-		}
-		Arrays.sort(sortedArr);
-
-		int index = (int) (Math.abs(inThreshold) * arrSize);
-		Double cutoff = sortedArr[index];
+//		Double[] sortedArr = null;
+//		if (inThreshold >= 0.0) {
+//			sortedArr = ArrUtil.getCopy(locArray);
+//		} else {
+//			sortedArr = ArrUtil.scale(locArray, -1.0);
+//		}
+//		Arrays.sort(sortedArr);
+//
+//		int index = (int) (Math.abs(inThreshold) * arrSize);
+//		Double cutoff = sortedArr[index];
+		
+		applog.log("peakIntervals: threshold =" + inThreshold + " index=" + "index" + " cutoff=" + cutoff);
 
 		// determine the peaks above the cutoff
 		int peakCount = 0;
