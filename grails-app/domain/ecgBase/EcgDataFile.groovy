@@ -6,7 +6,7 @@ class EcgDataFile {
 	String fileName
 	Date uploadDate = new Date()
 	byte[] fileData
-	EcgManager ecgDAO = null
+	EcgDAO ecgDAO = null
 	String dataFormat
 	
 	static formatHL7 = "HL7"
@@ -48,9 +48,9 @@ class EcgDataFile {
 		ecgDat.save()
 	}
 	
-	EcgManager initDAO () {
+	EcgDAO initDAO () {
 		if (ecgDAO == null) {
-			ecgDAO = new EcgManager(id)
+			ecgDAO = new EcgDAO(id)
 		}
 		return ecgDAO
 	}

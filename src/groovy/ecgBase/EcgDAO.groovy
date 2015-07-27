@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.ApplicationContext
 import org.springframework.context.support.GenericGroovyApplicationContext
 
-class EcgManager {
+class EcgDAO {
 
 	def timeAbsCode = "TIME_ABSOLUTE"
 	def leadCodes = [ "MDC_ECG_LEAD_I", "MDC_ECG_LEAD_II", "MDC_ECG_LEAD_III", "MDC_ECG_LEAD_AVR", "MDC_ECG_LEAD_AVL", "MDC_ECG_LEAD_AVF",
@@ -35,7 +35,7 @@ class EcgManager {
 	def qrsStart = []
 	def qrsEnd = []
 	
-	EcgManager(long id) {
+	EcgDAO(long id) {
 		ecgDat = EcgDataFile.get(id)
 		ecgDat.ecgDAO = this
 		applog.log "initialized ecgDat.ecgDAO: " + ecgDat.ecgDAO.timeAbsCode

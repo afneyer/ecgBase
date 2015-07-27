@@ -2,12 +2,12 @@ package ecgBase
 
 class EcgFileParser {
 	
-	EcgManager ecgDao = null;
+	EcgDAO ecgDao = null;
 	
 	static getFileParser() {
 		
 	}
-	EcgFileParser( EcgManager eDao ) {
+	EcgFileParser( EcgDAO eDao ) {
 		ecgDao = eDao
 	}
 	

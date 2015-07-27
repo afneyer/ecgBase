@@ -5,7 +5,7 @@ import static org.springframework.http.HttpStatus.*
 import org.springframework.aop.aspectj.RuntimeTestWalker.ThisInstanceOfResidueTestVisitor;
 
 import ecgBase.EcgDataFile
-import ecgBase.EcgManager
+import ecgBase.EcgDAO
 import ecgBase.AppLog
 import grails.transaction.Transactional
 
@@ -25,7 +25,7 @@ class EcgDataFileController {
     }
 
     def show(EcgDataFile ecgDataInstance) {
-    	EcgManager dao = ecgDataInstance.initDAO()
+    	EcgDAO dao = ecgDataInstance.initDAO()
         respond ecgDataInstance
     }
 
@@ -72,7 +72,7 @@ class EcgDataFileController {
 		appLog.log(" ")
 		appLog.log( "Entering FFT and Graph" + "   " + new Date() )
 		
-		def EcgManager ecgManager = new EcgManager(id)
+		def EcgDAO ecgManager = new EcgDAO(id)
 		ecgManager.initData()
 		
 		// TODO : remove
@@ -98,7 +98,7 @@ class EcgDataFileController {
 		appLog.log(" ")
 		appLog.log( "Entering Graph Selected Sequence" + "   " + new Date() )
 		
-		def EcgManager ecgManager = new EcgManager(id)
+		def EcgDAO ecgManager = new EcgDAO(id)
 		ecgManager.initData()
 		
 		def String graphDataStr = ecgManager.getSelectedGraphDataString( ecgManager.leadCodes[1] )		
@@ -113,7 +113,7 @@ class EcgDataFileController {
 	@Transactional
 	def graphJsp(long id) {
 		
-		def EcgManager ecgManager = new EcgManager(id)
+		def EcgDAO ecgManager = new EcgDAO(id)
 		ecgManager.initData()
 		appLog.log "Entering Graph Action"
 					    		 

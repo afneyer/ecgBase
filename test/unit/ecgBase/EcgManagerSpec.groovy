@@ -18,7 +18,7 @@ import groovyx.gprof.Profiler
 class EcgManagerSpec extends Specification {
 	
 	def AppLog applog = AppLog.getLogService()
-	def EcgManager ecgManager = null
+	def EcgDAO ecgDAO = null
 	def String testSampleFileName = "ecg01.xml"
 	def Integer squareLeadIndex = 12
 	def String squareLeadCode = 'Square Lead'
@@ -29,8 +29,8 @@ class EcgManagerSpec extends Specification {
 
 		EcgUtil.uploadSampleFile(testSampleFileName)
 		def testSample = EcgDataFile.findByFileName(testSampleFileName)
-		ecgManager = new EcgManager( testSample.id )
-		ecgManager.createLeads()
+		ecgDAO = new EcgDAO( testSample.id )
+		ecgDAO.createLeads()
 
 		applog.log "Completed EcgManagerSpec.setup"
 	}
@@ -41,23 +41,23 @@ class EcgManagerSpec extends Specification {
 	void "test testSetup"() {
 
 		expect:
-		ecgManager.ecgDat != null
-		ecgManager.ecgDat.fileName == testSampleFileName
+		ecgDAO.ecgDat != null
+		ecgDAO.ecgDat.fileName == testSampleFileName
 		// there should be 12 standard lead codes
-		ecgManager.getLeadCodes().size == 12
+		ecgDAO.getLeadCodes().size == 12
 		// there should be 12 standard leads plus one computed Square Lead
-		ecgManager.getLeads().size == squareLeadIndex+1
+		ecgDAO.getLeads().size == squareLeadIndex+1
 
 	}
 
 	void "test determineHeartRate"() {
 		applog.log "Entering test determineHeartRate"
 
-		ecgManager.determineHeartRate()
+		ecgDAO.determineHeartRate()
 
 		expect:
-		ecgManager.heartRate < 71.7
-		ecgManager.heartRate > 71.5
+		ecgDAO.heartRate < 71.7
+		ecgDAO.heartRate > 71.5
 
 		applog.log "Exiting test determineHeartRate"
 	}
@@ -65,10 +65,10 @@ class EcgManagerSpec extends Specification {
 	void "test determineQrsInterval"() {
 		applog.log "Entering test determineHeartQrsInterval"
 
-		ecgManager.determineHeartRate()
-		EcgLead lead2 = ecgManager.leads[1];
-		ecgManager.determineQrsInterval( lead2 );
-		Double[] qrsInd = ecgManager.getQrsIndex( lead2 );
+		ecgDAO.determineHeartRate()
+		EcgLead lead2 = ecgDAO.leads[1];
+		ecgDAO.determineQrsInterval( lead2 );
+		Double[] qrsInd = ecgDAO.getQrsIndex( lead2 );
 		
 		Double[] tim = lead2.getTimes()
 		Double[] val = lead2.getValues()
@@ -122,8 +122,8 @@ class EcgManagerSpec extends Specification {
 		
 		
 		expect:
-		ecgManager.heartRate < 71.7
-		ecgManager.heartRate > 71.5
+		ecgDAO.heartRate < 71.7
+		ecgDAO.heartRate > 71.5
 
 		applog.log "Exiting test determineHeartQrsInterval"
 	}
@@ -155,8 +155,8 @@ class EcgManagerSpec extends Specification {
 
 		applog.log "Entering test manualExploration"
 
-		ecgManager.determineHeartRate()
-		def EcgLead lead = ecgManager.leads[1]
+		ecgDAO.determineHeartRate()
+		def EcgLead lead = ecgDAO.leads[1]
 		def arrSize = lead.getNumSamples()
 		def values = lead.getValues()
 		
@@ -191,8 +191,8 @@ class EcgManagerSpec extends Specification {
 		applog.log("qrsStart",peakIntervals[0]);
 		applog.log("qrsPeak",peakIntervals[1]);
 		applog.log("qrsEnd",peakIntervals[2]);
-		ecgManager.qrsStart = peakIntervals[0];
-		ecgManager.qrsEnd = peakIntervals[2];
+		ecgDAO.qrsStart = peakIntervals[0];
+		ecgDAO.qrsEnd = peakIntervals[2];
 
 		// applog.logChart("a2ClusterIndexFftFiltered","tim","index","intex(tim)",ArrUtil.trim(tim,trimPoint), ArrUtil.trim(clusterDbl,trimPoint))
 
