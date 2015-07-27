@@ -1,4 +1,4 @@
-<%@ page import="ecgBase.EcgData"%>
+<%@ page import="ecgBase.EcgDataFile"%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -14,7 +14,7 @@
 
 <body>
 
-	<div class="nav" role="navigation">
+    <div class="nav" role="navigation">
 			<ul>
 				<li><a class="home" href="${createLink(uri: '/')}"><g:message code="default.home.label"/></a></li>
 				<li><g:link class="list" action="index"><g:message code="default.list.label" args="[entityName]" /></g:link></li>
@@ -38,7 +38,12 @@
 
 		</g:javascript>
 
-	<div id="chart_div"></div>
+    <div id="chart_div"></div>
+    
+	
+
+
+	
 
 
 </body>

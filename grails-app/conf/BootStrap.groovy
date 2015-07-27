@@ -1,5 +1,5 @@
 import ecgBase.AppLog;
-import ecgBase.EcgData;
+import ecgBase.EcgDataFile;
 import ecgBase.EcgUtil;
 
 class BootStrap {

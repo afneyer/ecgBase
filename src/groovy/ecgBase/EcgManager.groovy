@@ -19,7 +19,7 @@ class EcgManager {
 	
 	def leads = []
 	
-	def EcgData ecgDat
+	def EcgDataFile ecgDat
 	
 	def initialized = false
 	
@@ -36,7 +36,7 @@ class EcgManager {
 	def qrsEnd = []
 	
 	EcgManager(long id) {
-		ecgDat = EcgData.get(id)
+		ecgDat = EcgDataFile.get(id)
 		ecgDat.ecgDAO = this
 		applog.log "initialized ecgDat.ecgDAO: " + ecgDat.ecgDAO.timeAbsCode
 	}

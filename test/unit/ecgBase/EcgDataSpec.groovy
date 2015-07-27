@@ -8,7 +8,7 @@ import spock.lang.Specification
 /**
  * See the API for {@link grails.test.mixin.support.GrailsUnitTestMixin} for usage instructions
  */
-@Mock(EcgData)
+@Mock(EcgDataFile)
 @TestMixin(GrailsUnitTestMixin)
 class EcgDataSpec extends Specification {
 	
@@ -27,11 +27,11 @@ class EcgDataSpec extends Specification {
 		
 		expect:
 		
-		EcgData.findByFileName("ecg01.xml").dataFormat == EcgData.formatHL7		
-		EcgData.findByFileName("Example.dcm").dataFormat == EcgData.formatBinary
-		EcgData.findByFileName("Example.scp").dataFormat == EcgData.formatBinary
-		EcgData.findByFileName("Example.xml").dataFormat == EcgData.formatHL7
-		EcgData.findByFileName("OpenBCI01.txt").dataFormat == EcgData.formatOpenBCI
+		EcgDataFile.findByFileName("ecg01.xml").dataFormat == EcgDataFile.formatHL7		
+		EcgDataFile.findByFileName("Example.dcm").dataFormat == EcgDataFile.formatBinary
+		EcgDataFile.findByFileName("Example.scp").dataFormat == EcgDataFile.formatBinary
+		EcgDataFile.findByFileName("Example.xml").dataFormat == EcgDataFile.formatHL7
+		EcgDataFile.findByFileName("OpenBCI01.txt").dataFormat == EcgDataFile.formatOpenBCI
 		
 	}
 }

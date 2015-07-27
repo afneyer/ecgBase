@@ -1,6 +1,6 @@
 package ecgBase
 
-class EcgData {
+class EcgDataFile {
 
 	String identifier
 	String fileName
@@ -34,14 +34,14 @@ class EcgData {
 
 	static transients = ['ecgDAO']
 	
-	EcgData() {
+	EcgDataFile() {
 	}
 	
-	EcgData( File file ) {
-		EcgData ecgDat = new EcgData();
+	EcgDataFile ( File file ) {
+		EcgDataFile ecgDat = new EcgDataFile();
 		ecgDat.fileName = file.getName()
 		ecgDat.fileData = file.getBytes()
-		ecgDat.identifier = EcgData.count()
+		ecgDat.identifier = EcgDataFile.count()
 		ecgDat.uploadDate = new Date()
 		ecgDat.dataFormat = determineDataFormat(ecgDat.fileData)
 		applog.log "Dataformat = " + ecgDat.dataFormat

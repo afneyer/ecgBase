@@ -13,7 +13,7 @@ import groovyx.gprof.Profiler
  * See the API for {@link grails.test.mixin.support.GrailsUnitTestMixin} for usage instructions
  */
 @TestMixin(GrailsUnitTestMixin)
-@Mock(EcgData)
+@Mock(EcgDataFile)
 class EcgUtilSpec extends Specification {
 
 	def AppLog applog = AppLog.getLogService()
@@ -28,7 +28,7 @@ class EcgUtilSpec extends Specification {
 	void "test uploadSampleFiles"() {
 
 		EcgUtil.uploadSampleFiles()
-		def testSample = EcgData.findByFileName("ecg01.xml")
+		def testSample = EcgDataFile.findByFileName("ecg01.xml")
 		applog.log "testSample = " + testSample.getFileDataStr32()
 
 		expect:
@@ -46,7 +46,7 @@ class EcgUtilSpec extends Specification {
 		prof.start()
 		EcgUtil.uploadSampleFiles()
 		applog.log("Performance testing uploading files")
-		def testSample = EcgData.findByFileName("ecg01.xml")
+		def testSample = EcgDataFile.findByFileName("ecg01.xml")
 		prof.stop()
 		applog.log prof.report.prettyPrint( perflog.getPrintWriter() )
 

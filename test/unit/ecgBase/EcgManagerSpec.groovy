@@ -13,7 +13,7 @@ import groovyx.gprof.Profiler
 /**
  * See the API for {@link grails.test.mixin.support.GrailsUnitTestMixin} for usage instructions
  */
-@Mock(EcgData)
+@Mock(EcgDataFile)
 @TestMixin(GrailsUnitTestMixin)
 class EcgManagerSpec extends Specification {
 	
@@ -28,7 +28,7 @@ class EcgManagerSpec extends Specification {
 		applog.log "Running EcgManagerSpec.setup"
 
 		EcgUtil.uploadSampleFile(testSampleFileName)
-		def testSample = EcgData.findByFileName(testSampleFileName)
+		def testSample = EcgDataFile.findByFileName(testSampleFileName)
 		ecgManager = new EcgManager( testSample.id )
 		ecgManager.createLeads()
 

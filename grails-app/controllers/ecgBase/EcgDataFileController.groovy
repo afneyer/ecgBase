@@ -4,7 +4,7 @@ import static org.springframework.http.HttpStatus.*
 
 import org.springframework.aop.aspectj.RuntimeTestWalker.ThisInstanceOfResidueTestVisitor;
 
-import ecgBase.EcgData
+import ecgBase.EcgDataFile
 import ecgBase.EcgManager
 import ecgBase.AppLog
 import grails.transaction.Transactional
@@ -13,7 +13,7 @@ import grails.transaction.Transactional
 
 @Transactional(readOnly = true)
 
-class EcgDataController {
+class EcgDataFileController {
 
     static allowedMethods = [save: "POST", update: "PUT", delete: "DELETE"]
 	
@@ -21,16 +21,16 @@ class EcgDataController {
 
     def index(Integer max) {
         params.max = Math.min(max ?: 10, 100)
-        respond EcgData.list(params), model:[ecgDataInstanceCount: EcgData.count()]
+        respond EcgDataFile.list(params), model:[ecgDataInstanceCount: EcgDataFile.count()]
     }
 
-    def show(EcgData ecgDataInstance) {
+    def show(EcgDataFile ecgDataInstance) {
     	EcgManager dao = ecgDataInstance.initDAO()
         respond ecgDataInstance
     }
 
     def create() {
-        respond new EcgData(params)
+        respond new EcgDataFile(params)
     }
 	
 	@Transactional
@@ -39,14 +39,14 @@ class EcgDataController {
 		if(file.empty) {
 			flash.message = "File cannot be empty"
 		} else {
-			def ecgDataInstance = new EcgData( file )
+			def ecgDataInstance = new EcgDataFile( file )
 		}
 		redirect (action:'index')
 	}
 	
 	@Transactional
 	def download(long id) {
-        def ecgDataSample = EcgData.get(id)
+        def ecgDataSample = EcgDataFile.get(id)
         if ( ecgDataSample == null) {
             flash.message = "ECG record not found."
             redirect (action:'list')
@@ -155,7 +155,7 @@ class EcgDataController {
 	
 
     @Transactional
-    def save(EcgData ecgDataInstance) {
+    def save(EcgDataFile ecgDataInstance) {
         if (ecgDataInstance == null) {
             notFound()
             return
@@ -177,12 +177,12 @@ class EcgDataController {
         }
     }
 
-    def edit(EcgData ecgDataInstance) {
+    def edit(EcgDataFile ecgDataInstance) {
         respond ecgDataInstance
     }
 
     @Transactional
-    def update(EcgData ecgDataInstance) {
+    def update(EcgDataFile ecgDataInstance) {
         if (ecgDataInstance == null) {
             notFound()
             return
@@ -205,7 +205,7 @@ class EcgDataController {
     }
 
     @Transactional
-    def delete(EcgData ecgDataInstance) {
+    def delete(EcgDataFile ecgDataInstance) {
 
         if (ecgDataInstance == null) {
             notFound()

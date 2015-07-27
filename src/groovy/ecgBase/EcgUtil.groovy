@@ -63,7 +63,7 @@ class EcgUtil {
 			}
 	}
 	
-	static EcgData uploadSampleFile( String inFileName ) {
+	static EcgDataFile uploadSampleFile( String inFileName ) {
 		
 		def filePath = Holders.config.uploadFolder 
 		def file = new File(filePath,inFileName)
@@ -72,10 +72,10 @@ class EcgUtil {
 		
 	}
 	
-	static EcgData uploadSampleFile( File inFile ) {
+	static EcgDataFile uploadSampleFile( File inFile ) {
 
 		applog.log "Uploading " + inFile.getName()
-		def ecgDataInstance = new EcgData( inFile )
+		def ecgDataInstance = new EcgDataFile( inFile )
 		return ecgDataInstance
 	
 	}

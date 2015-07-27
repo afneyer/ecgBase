@@ -1,5 +1,5 @@
 
-<%@ page import="ecgBase.EcgData"%>
+<%@ page import="ecgBase.EcgDataFile"%>
 <!DOCTYPE html>
 <html>
 <head>
