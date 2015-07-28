@@ -1,17 +1,16 @@
 package ecgBase
 
-class EcgFileParser {
+/*
+ * The result of the parsing is to fill the EcgDAO object which is not dependent on the file type
+ */
+abstract class EcgFileParser {
 	
-	EcgDAO ecgDao = null;
+	def EcgDataFile ecgDataFile
 	
-	static getFileParser() {
-		
-	}
-	EcgFileParser( EcgDAO eDao ) {
-		ecgDao = eDao
+	EcgFileParser( EcgDataFile file ) {
+		ecgDataFile = file;
 	}
 	
-	void parse() {
-	}
+	abstract EcgDAO parse()
 
 }

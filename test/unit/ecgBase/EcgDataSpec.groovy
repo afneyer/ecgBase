@@ -7,6 +7,9 @@ import spock.lang.Specification
 
 /**
  * See the API for {@link grails.test.mixin.support.GrailsUnitTestMixin} for usage instructions
+ * 
+ * rename this class
+ * 
  */
 @Mock(EcgDataFile)
 @TestMixin(GrailsUnitTestMixin)

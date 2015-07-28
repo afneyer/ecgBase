@@ -120,6 +120,7 @@ class EcgDataFileController {
 //	    appLog.log ""
 //      appLog.log "Entering Evaluated and Learn " + new Date()
 		
+		// TODO : remove after testing 
 		def graphData = ecgManager.createEcgGraphDataArray()
 		
 		// TODO : remove

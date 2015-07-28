@@ -11,7 +11,7 @@ import org.springframework.context.support.GenericGroovyApplicationContext
 class EcgDAO {
 
 	def timeAbsCode = "TIME_ABSOLUTE"
-	def leadCodes = [ "MDC_ECG_LEAD_I", "MDC_ECG_LEAD_II", "MDC_ECG_LEAD_III", "MDC_ECG_LEAD_AVR", "MDC_ECG_LEAD_AVL", "MDC_ECG_LEAD_AVF",
+	static leadCodes = [ "MDC_ECG_LEAD_I", "MDC_ECG_LEAD_II", "MDC_ECG_LEAD_III", "MDC_ECG_LEAD_AVR", "MDC_ECG_LEAD_AVL", "MDC_ECG_LEAD_AVF",
                       "MDC_ECG_LEAD_V1", "MDC_ECG_LEAD_V2", "MDC_ECG_LEAD_V3", "MDC_ECG_LEAD_V4", "MDC_ECG_LEAD_V5", "MDC_ECG_LEAD_V6" ]
 	
 	def Integer squareLeadIndex = 12
@@ -35,15 +35,19 @@ class EcgDAO {
 	def qrsStart = []
 	def qrsEnd = []
 	
+	/*
+	 * Only construct EcgDAOs with the id of a data file
+	 */
 	EcgDAO(long id) {
 		ecgDat = EcgDataFile.get(id)
 		ecgDat.ecgDAO = this
-		applog.log "initialized ecgDat.ecgDAO: " + ecgDat.ecgDAO.timeAbsCode
+		ecgDat.parseDataFile()
 	}
 	
 	void initData() {
 		if (!initialized) {
-			createLeads()
+			
+			// createLeads()
 			determineHeartRate()
 		}
 	}
@@ -156,6 +160,8 @@ class EcgDAO {
 	}
 	
 	Object createEcgGraphDataArray() {
+		
+		// TODO this function should not use the file
 		
 			def leadI = 'MDC_ECG_LEAD_I'
 			

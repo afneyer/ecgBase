@@ -75,6 +75,21 @@ class EcgDataFile {
 		}	
 	} 
 	
+	EcgFileParser getDataFileParser() {
+		
+		switch(dataFormat) {
+			case formatHL7:  return new HL7FileParser( this )
+		}
+		
+	}
+	
+	boolean parseDataFile() {
+		
+		EcgFileParser parser = getDataFileParser()
+		
+		
+	}
+	
 	String getFileDataStr32() {
 		String str = new String(fileData)
 		str = str.substring(0,Math.min(31,str.length()))
